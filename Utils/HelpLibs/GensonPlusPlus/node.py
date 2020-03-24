@@ -1,4 +1,4 @@
-from .generators import GENERATORS, Typeless
+from .generators._init_ import GENERATORS, Typeless
 
 
 class SchemaGenerationError(RuntimeError):

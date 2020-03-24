@@ -10,11 +10,11 @@ from pathlib import Path
 
 from Utils.HelpLibs.binary_object_helper import save_object_in_binary
 
-from Utils.HttpClasss.HttpBody import HttpBody
-from Utils.HttpClasss.HttpConversation import HttpConversation
-from Utils.HttpClasss.HttpHeaderField import HttpHeaderField
-from Utils.HttpClasss.HttpHeaders import HttpHeaders
-from Utils.HttpClasss.Packet import Packet
+from Utils.HttpClass.HttpBody import HttpBody
+from Utils.HttpClass.HttpConversation import HttpConversation
+from Utils.HttpClass.HttpHeaderField import HttpHeaderField
+from Utils.HttpClass.HttpHeaders import HttpHeaders
+from Utils.HttpClass.Packet import Packet
 from Utils.HelpLibs.regex_founder import get_regex_of_url
 
 ##################################################################

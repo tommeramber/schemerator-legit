@@ -2,14 +2,14 @@ import os
 import pathlib
 import re
 
-from Utils.HttpClasss.HttpHeaders import HttpHeaders
+from Utils.HttpClass.HttpHeaders import HttpHeaders
 from Utils.HelpLibs import binary_object_helper
 
 from .HttpConfigHeaderField import HttpConfigHeaderField
 from .MinMax import MinMax
 from .StringConfig import StringConfig
 
-from Utils.ConfigClasss import GlobalConfig
+from Utils.ConfigClass import GlobalConfig
 
 from Utils.loggers.main_logger import main_logger
 

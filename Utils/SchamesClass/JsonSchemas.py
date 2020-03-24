@@ -7,7 +7,7 @@ from Utils.HelpLibs.binary_object_helper import load_all_binary_objects
 from Utils.HelpLibs.GensonPlusPlus.builder import SchemaBuilder as SchemaBuilderPlusPlus
 from Utils.loggers.main_logger import main_logger
 
-from Utils.ConfigClasss import GlobalConfig
+from Utils.ConfigClass import GlobalConfig
 
 
 class JsonSchemas:

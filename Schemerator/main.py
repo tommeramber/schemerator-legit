@@ -16,10 +16,10 @@ from Utils.loggers.main_logger import main_logger
 from Utils.HelpLibs.pcap_parser import convert_connections_folder_to_binary_folder
 from Utils.HelpLibs.pcap_splitter import split_pcap
 
-from Utils.SchamesClasss.HttpConfig import HttpConfig
-from Utils.SchamesClasss.JsonSchemas import JsonSchemas
+from Utils.SchamesClass.HttpConfig import HttpConfig
+from Utils.SchamesClass.JsonSchemas import JsonSchemas
 
-from Utils.ConfigClasss import GlobalConfig
+from Utils.ConfigClass import GlobalConfig
 
 # Globals
 # Every time when program run he save all temp files in unique temp folder.

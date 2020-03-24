@@ -2,7 +2,7 @@ from .MinMax import MinMax
 
 import Utils.HelpLibs.regex_founder as regex_founder
 
-from Utils.ConfigClasss import GlobalConfig
+from Utils.ConfigClass import GlobalConfig
 
 import re
 import math
@@ -12,7 +12,7 @@ class StringConfig:
     _ENGLISH_LETTERS = [chr(ascii_code) for ascii_code in range(ord('a'), ord('z') + 1)]
     _ENGLISH_LETTERS += [chr(ascii_code) for ascii_code in range(ord('A'), ord('Z') + 1)]
     _ENGLISH_LETTERS = set(_ENGLISH_LETTERS)
-    _HEBREW_LETTERS = set([chr(ascii_code) for ascii_code in range(ord('×'), ord('×ª') + 1)])
+    _HEBREW_LETTERS = set([chr(ascii_code) for ascii_code in range(ord('א'), ord('ת') + 1)])
     _DIGITS = set([chr(ascii_code) for ascii_code in range(ord('0'), ord('9') + 1)])
     _MIN_OCCURRENCES_FOR_ONE_OPTION = 5
     _EXTRA_ITEM_WHEN_CREATE_NEW_OCCURRENCES = 2
@@ -170,7 +170,7 @@ class StringConfig:
                 regex_string += "a-zA-Z"
                 is_english_letters = True
             if character in self._HEBREW_LETTERS and not is_hebrew_letters:
-                regex_string += "×ª-×"
+                regex_string += "א-ת"
                 is_hebrew_letters = True
             if character in self._DIGITS and not is_digits:
                 regex_string += "0-9"

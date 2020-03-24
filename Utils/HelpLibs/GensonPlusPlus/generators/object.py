@@ -2,7 +2,7 @@ from collections import defaultdict
 from re import search
 from .base import SchemaGenerator
 
-from Utils.ConfigClasss import GlobalConfig
+from Utils.ConfigClass import GlobalConfig
 
 
 class Object(SchemaGenerator):
