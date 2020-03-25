@@ -170,7 +170,7 @@ class StringConfig:
                 regex_string += "a-zA-Z"
                 is_english_letters = True
             if character in self._HEBREW_LETTERS and not is_hebrew_letters:
-                regex_string += "א-ת"
+                regex_string += "ת-א"
                 is_hebrew_letters = True
             if character in self._DIGITS and not is_digits:
                 regex_string += "0-9"

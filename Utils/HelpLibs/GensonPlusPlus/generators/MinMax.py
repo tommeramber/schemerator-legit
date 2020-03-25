@@ -17,7 +17,7 @@ class MinMax:
         This method expand the sizes to be in integer sizes.
 
         for example if you have minimum number that is between 0-255 he change it to 0.
-        and if@it's between 255-65535 change it to be 255.
+        and if it's between 255-65535 change it to be 255.
         and if you have maximum value between 0-255 change it to 255 and so on..
         """
         self.minimum = max([i for i in MinMax.expand_integer_sizes.SIZES_OF_INT if i <= self.minimum])
