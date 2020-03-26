@@ -25,3 +25,6 @@ If there is an argent but in production and we need to fix it fast we can create
 |release	|develop	    |master and develop |
 |hotfix	    |master	        |master and develop |
 
+# Coding standart
+
+The project code will be written according to pep8 python coding standart as described [here](https://realpython.com/python-pep8/).
