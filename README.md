@@ -26,7 +26,6 @@ If there is an argent but in production and we need to fix it fast we can create
 |release	|develop	    |master and develop |
 |hotfix	    |master	        |master and develop |
 
-
 ## Naming convention
 For **feature**, **release** and **hotfix** branches we use the type of the branch as a prefix and then '/'.
 
@@ -40,3 +39,6 @@ In the names of the branches use all lower-cased letters, words should separated
 - **feature/proxy-log-messages**
 - **release/1.2.0**
 - **hotfix/1.2.1**
+
+# Coding standart
+The project code will be written according to pep8 python coding standart as described [here](https://realpython.com/python-pep8/).
