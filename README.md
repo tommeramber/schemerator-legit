@@ -27,6 +27,12 @@ If there is an argent but in production and we need to fix it fast we can create
 |hotfix	    |master	        |master and develop |
 
 
+## merge approval process
+
+As mentioned above, each feature will be developed in a feature branch. After the feature is complete and the branch is ready for merge, a code review will preformed. Every team member can be a reviewer, except the code writer, obviously.
+After the code review, and the fixes if needed, the feature owner will request a merge, using "merge request" option in gitlab. Only the Team Leader (Alona) can approve merge to Dev  
+
+
 ## Naming convention
 For **feature**, **release** and **hotfix** branches we use the type of the branch as a prefix and then '/'.
 
