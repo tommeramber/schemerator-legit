@@ -27,7 +27,7 @@ If there is an argent but in production and we need to fix it fast we can create
 |hotfix	    |master	        |master and develop |
 
 
-## merge approval process
+## Merge approval process
 
 As mentioned above, each feature will be developed in a feature branch. After the feature is complete and the branch is ready for merge, a code review will be preformed. Every team member can be a reviewer, except the code writer, obviously.
 
