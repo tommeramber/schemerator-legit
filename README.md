@@ -29,9 +29,9 @@ If there is an argent but in production and we need to fix it fast we can create
 
 ## merge approval process
 
-As mentioned above, each feature will be developed in a feature branch. After the feature is complete and the branch is ready for merge, a code review will preformed. Every team member can be a reviewer, except the code writer, obviously.
+As mentioned above, each feature will be developed in a feature branch. After the feature is complete and the branch is ready for merge, a code review will be preformed. Every team member can be a reviewer, except the code writer, obviously.
 
-After the code review, and the fixes if needed, the feature owner will request a merge, using "merge request" option in gitlab. Only the Team Leader (Alona) can approve merge to Dev.
+After the code review, and the fixes if needed, the feature owner will request a merge, using "merge request" option in gitlab. Only the Team Leader (Alona) can approve merge to Develop.
 
 Pls be responsible and follow the rules above, so the Repo won't fu**ed up.  
 
