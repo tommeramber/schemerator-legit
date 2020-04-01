@@ -49,3 +49,6 @@ In the names of the branches use all lower-cased letters, words should separated
 - **feature/proxy-log-messages**
 - **release/1.2.0**
 - **hotfix/1.2.1**
+
+# Coding standart
+The project code will be written according to pep8 python coding standart as described [here](https://realpython.com/python-pep8/).
