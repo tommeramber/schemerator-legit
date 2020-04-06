@@ -23,9 +23,9 @@ from Utils.ConfigClass import GlobalConfig
 
 # Globals
 # Every time when program run he save all temp files in unique temp folder.
-TEMP_FILES_FOLDER = Path("D:\\tmp") / datetime.datetime.now().strftime("%m-%d-%y_%H-%M-%S")
-FOLDER_OF_CONNECTIONS_PCAPS = Path(TEMP_FILES_FOLDER) / "connection_pcaps"
-CONVERSATIONS_PICKLES_FOLDER = Path(TEMP_FILES_FOLDER) / "conversation_pickles"
+#TEMP_FILES_FOLDER = Path("D:\\tmp") / datetime.datetime.now().strftime("%m-%d-%y_%H-%M-%S")
+#FOLDER_OF_CONNECTIONS_PCAPS = Path(TEMP_FILES_FOLDER) / "connection_pcaps"
+#CONVERSATIONS_PICKLES_FOLDER = Path(TEMP_FILES_FOLDER) / "conversation_pickles"
 
 
 def log_running_time(start_running):
@@ -56,7 +56,7 @@ def parse_argument():
     return parser.parse_args()
 
 
-def main():
+def old_main():
     print_logo()
     args = parse_argument()
 
@@ -67,17 +67,10 @@ def main():
         main_logger.error("Invalid configuration provided, must generate HTTP Config or JSON Schemas.")
         sys.exit()
 
-    TEMP_FILES_FOLDER.mkdir(parents=True, exist_ok=True)
+    #TEMP_FILES_FOLDER.mkdir(parents=True, exist_ok=True)
 
     main_logger.info("\n\n#####\n"
                      "Using Pcap file: {}".format(Path(GlobalConfig.global_config.vars.INPUT_PCAP_PATH).resolve()))
-    try:
-        split_pcap(GlobalConfig.global_config.vars.INPUT_PCAP_PATH, FOLDER_OF_CONNECTIONS_PCAPS)
-    except FileNotFoundError:
-        main_logger.error("Input Pcap file not found in path {}".format(GlobalConfig.global_config.vars.INPUT_PCAP_PATH))
-        sys.exit()
-
-    convert_connections_folder_to_binary_folder(folder_to_work_with=TEMP_FILES_FOLDER)
 
     try:
         if GlobalConfig.global_config.vars.GENERATE_HTTP_CONFIG:
@@ -110,9 +103,11 @@ def main():
     except Exception as e:
         main_logger.exception(e)
         raise e
-    finally:
-        shutil.rmtree(str(TEMP_FILES_FOLDER))
+    #finally:
+        #shutil.rmtree(str(TEMP_FILES_FOLDER))
 
+def main():
+    print_logo()
 
 if __name__ == "__main__":
     start_time = datetime.datetime.now()
