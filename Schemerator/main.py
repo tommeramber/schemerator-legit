@@ -108,6 +108,8 @@ def old_main():
 
 def main():
     print_logo()
+    while True:
+        continue
 
 if __name__ == "__main__":
     start_time = datetime.datetime.now()
