@@ -16,7 +16,7 @@ from Utils.loggers.main_logger import main_logger
 from .HTTP_HEADER_LIST_FROM_RFC import HTTP_HEADER_LIST_FROM_RFC
 
 
-class HttpConfig:
+class HttpSchema:
     _COMMENT_SIGN = "#"
     _REGEX_LINE_COMMENT_ON_ENUMS = "# occurrences (\d*)"
     SPECIAL_HEADERS = ["status", "mjr_version", "min_version"]
@@ -178,6 +178,9 @@ class HttpConfig:
             for http_conversation in binary_object_helper.load_all_binary_objects(file_name):
                 self.append_by_http_headers(http_conversation.pkt_req.http_headers)
                 self.append_by_http_headers(http_conversation.pkt_res.http_headers)
+
+    def generate_from_db(self):
+        pass
 
     def expand_integer_sizes(self):
         """

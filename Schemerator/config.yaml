@@ -2,7 +2,7 @@
 
 # Pcap path to generate the schemas from.
 # can also enter path to folder that contains multiple pcaps.
-input_pcap_path: "C:\\Users\\s8196658\\Desktop\\2019-12-29_13-59-31_2019-12-29_14-00-31.pcap"
+input_pcap_path: "Temp"
 
 # Target folder for schemas output
 output_folder_path: "ipfail3"
