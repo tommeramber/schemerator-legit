@@ -1,0 +1,4 @@
+# This HTTP Config file was created by Schemerator.
+mjr_version numeric "1" "1"
+min_version numeric "1" "1"
+status regex ".{20,0}"
