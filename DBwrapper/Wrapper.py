@@ -6,17 +6,18 @@ containers in Schemrator project, to easily handle db
 Author: Shaya Weissberg
 """
 
-
 import sqlite3
 
 
-class DBwrapper:
+class Wrapper:
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, config_file=None):
         self.db = None
 
         if name:
             self.__open_connection(name)
+        if config_file:
+            name = self.__name_from_config_file(config_file)
 
     # Privte method to open a db connetion.
     # Each container in Schemrator project has a well defined db table,
@@ -32,8 +33,8 @@ class DBwrapper:
     # Privte method to claen op a db connetion
     def __close_connection(self):
         if self.db:
-             self.db.commit()
-             self.db.close()
+            self.db.commit()
+            self.db.close()
 
     # For using in 'with' seatmates
     def __exit__(self, exc_type, exc_value, traceback):
@@ -42,6 +43,10 @@ class DBwrapper:
 
     def __enter__(self):
         return self
+
+    def __name_from_config_file(config_file):
+        # TODO: implemantation
+        return name
 
     ##################################
     # Generic db handling
@@ -56,16 +61,13 @@ class DBwrapper:
         self.db.execute("INSERT INTO {} values({})".format(table_name, self.data))
         self.db.commit()
 
-    def get_list_apis(self):
-
-        return list_api
-
-
-    def get_conversations_for_api(self, api: string):
-        return # Data according the container context
-
     ##################################
     # context aware methods
     ##################################
 
-    def insert_schema(api: string, method: string, schema: blob)
+    def get_list_apis(self):
+
+        return list_api
+
+    def get_conversations_for_api(self, api: string):
+        return  # Data according the container context
