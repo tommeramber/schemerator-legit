@@ -1,0 +1,33 @@
+volumes:
+  - name: mitmproxy-dbdir
+    persistentVolumeClaim:
+    claimName: db-pvc
+containers:
+  - resources: {}
+    terminationMessagePath: /dev/termination-log
+    name: my-proxy-git
+    command:
+    - mitmdump
+    - '--mode'
+    - 'reverse:http://demo-api-app-git:8080'
+    - '--set'
+    - confdir=/home/mitmproxy/mitmconf
+    - '-s'
+    - /home/mitmproxy/saveFlow.py
+    env:
+    - name: APP_SERVICE
+      value: demo-api-app-git
+    - name: APP_SERVICE_PORT
+      value: '8080'
+    imagePullPolicy: Always
+    volumeMounts:
+    - name: mitmproxy-dbdir
+      mountPath: /home/mitmproxy/db
+    terminationMessagePolicy: File
+    image: >-
+    image-registry.openshift-image-registry.svc:5000/schemerator/my-proxy-git@sha256:d2611c98c0dc941c97cc8b0b4e68da209473f81cb52839a48b9c23cbbc8a49ba
+restartPolicy: Always
+terminationGracePeriodSeconds: 30
+dnsPolicy: ClusterFirst
+securityContext: {}
+schedulerName: default-scheduler
