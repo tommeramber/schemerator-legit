@@ -20,13 +20,9 @@ def is_json(myjson):
 
 class Wrapper:
 
-    def __init__(self, name=None, config_file=None):
+    def __init__(self, name):
         self.db = None
-
-        if name:
-            if config_file:
-                name = self.__name_from_config_file(config_file)
-            self.__open_connection(name)
+        self.__open_connection(name)
 
     # Privte method to open a db connetion.
     # Each container in Schemrator project has a well defined db table,

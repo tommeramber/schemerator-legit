@@ -9,8 +9,8 @@ from .Wrapper import Wrapper
 
 class DBschemerator:
 
-    def __init__(self, config_file=None):
-        self.db = Wrapper(None, config_file)
+    def __init__(self, name):
+        self.db = Wrapper(name)
 
     #####################################
     # conversation handling
