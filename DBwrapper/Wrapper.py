@@ -20,38 +20,33 @@ def is_json(myjson):
 
 class Wrapper:
 
-    def __init__(self, name):
-        self.db = None
-        self.__open_connection(name)
-
-    # Privte method to open a db connetion.
+    # open a db connection on init.
     # Each container in Schemrator project has a well defined db table,
-    # but thay all use the same db
+    # but they all use the same db
     # @param name The name of the database to open.
-    def __open_connection(self, name):  # TODO: maybe name from config file?
+    def __init__(self, name):
         try:
             self.connection = sqlite3.connect(name)
+            self.cursor = self.connection.cursor()
 
         except sqlite3.Error as e:
             print("Error connecting to database!")  # TODO: change to log
 
-    # Privte method to claen op a db connetion
+
+
+    # Private method to clean op a db connection
     def __close_connection(self):
-        if self.db:
-            self.db.commit()
-            self.db.close()
+        self.connection.commit()
+        self.cursor.close()
+        self.connection.close()
 
     # For using in 'with' seatmates
     def __exit__(self, exc_type, exc_value, traceback):
-
         self.__close_connection()
 
     def __enter__(self):
         return self
 
-    def __name_from_config_file(self, config_file):
-        # TODO: implemantation
-        return name
 
     ##################################
     # Generic db handling
@@ -63,23 +58,17 @@ class Wrapper:
             self.data += '"' + value + '"' + ','
         self.data = self.data[0:len(self.data) - 1]
 
-        self.db.execute("INSERT INTO {} values({})".format(table_name, self.data))
-        self.db.commit()
+        self.cursor.execute("INSERT INTO {} values({})".format(table_name, self.data))
+        self.cursor.commit()
 
     def get_items(self, table_name, where=1):
         if (table_name != 1):
             self.where = where
-            self.items = self.db.execute("SELECT * FROM {} WHERE {}".format(table_name, self.where))
-            self.db.commit()
+            self.items = self.cursor.execute("SELECT * FROM {} WHERE {}".format(table_name, self.where))
+            self.cursor.commit()
             return list(self.items)
         else:
             return {}
 
-    def get_list_apis(self):
-
-        return list_api
-
-    def get_conversations_for_api(self, api: string):
-        return
 
     def data_validation (self, data)
