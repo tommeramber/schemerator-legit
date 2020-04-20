@@ -1,24 +1,19 @@
 """
-specific use of the Wrapper module for the DB to Proxy interface
+API for Raw Conversations table, using the Wrapper module
 
 Author: Shaya Weissberg
 """
 
 
-from .Wrapper import Wrapper
+from .wrapper import Wrapper
 import string
 
 
-class DBproxy:
+class RawConversationsAPI:
 
     def __init__(self, name):
         self.db = Wrapper(name)
 
-    #####################################
-    # conversation handling
-    #####################################
-
-    # save one raw conversation
     def save_one_conversation(self, url: string, method: string,  reqheaders: string,
                               req: string, resheaders: string, res: string):
 
@@ -30,6 +25,3 @@ class DBproxy:
     def delete_one_conversation(self, unique_id: int):
 
     def delete_all_conversations(self):
-
-
-

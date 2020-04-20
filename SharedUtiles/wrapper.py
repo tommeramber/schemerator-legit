@@ -28,6 +28,8 @@ class Wrapper:
         try:
             self.connection = sqlite3.connect(name)
             self.cursor = self.connection.cursor()
+            self.cursor.execute("CREATE TABLE data (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT,"
+                        " method TEXT, reqheaders TEXT, req TEXT, resheaders TEXT, res TEXT)") #TODO: create if not exist, create other tabels
 
         except sqlite3.Error as e:
             print("Error connecting to database!")  # TODO: change to log
