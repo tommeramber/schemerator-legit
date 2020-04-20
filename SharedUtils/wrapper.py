@@ -8,9 +8,10 @@ Author: Shaya Weissberg
 
 import sqlite3
 import json
+from contextlib import closing
 
 
-def is_json(myjson):
+def is_json(myjson):    # used for data validation
     try:
         json.loads(myjson)
     except ValueError:
@@ -25,52 +26,35 @@ class Wrapper:
     # but they all use the same db
     # @param name The name of the database to open.
     def __init__(self, name):
-        try:
-            self.connection = sqlite3.connect(name)
-            self.cursor = self.connection.cursor()
-            self.cursor.execute("CREATE TABLE data (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT,"
-                        " method TEXT, reqheaders TEXT, req TEXT, resheaders TEXT, res TEXT)") #TODO: create if not exist, create other tabels
+        self.connection = None
+        self.cursor = None
+        self.name = name
+        self.__close_connection()
 
+    # Private method to clean op a db connection
+    def __open_connection(self):
+        try:
+            self.connection = sqlite3.connect(self.name)
+            self.cursor = self.connection.cursor()
         except sqlite3.Error as e:
             print("Error connecting to database!")  # TODO: change to log
 
-
-
-    # Private method to clean op a db connection
     def __close_connection(self):
-        self.connection.commit()
-        self.cursor.close()
-        self.connection.close()
+        if self.connection:
+            self.connection.commit()
+            self.cursor.close()
+            self.connection.close()
 
     # For using in 'with' seatmates
+    def __enter__(self):
+        self.__open_connection()
+        return self
+
     def __exit__(self, exc_type, exc_value, traceback):
         self.__close_connection()
 
-    def __enter__(self):
-        return self
+  #  def insert(self, table, data):
+  #     with closing(self.cursor) as cur:
+  #          cur.execute("INSERT INTO ? ()", (table,  ))
 
-
-    ##################################
-    # Generic db handling
-    ##################################
-
-    def insert(self, table_name, *data):
-        self.data = ""
-        for value in data:
-            self.data += '"' + value + '"' + ','
-        self.data = self.data[0:len(self.data) - 1]
-
-        self.cursor.execute("INSERT INTO {} values({})".format(table_name, self.data))
-        self.cursor.commit()
-
-    def get_items(self, table_name, where=1):
-        if (table_name != 1):
-            self.where = where
-            self.items = self.cursor.execute("SELECT * FROM {} WHERE {}".format(table_name, self.where))
-            self.cursor.commit()
-            return list(self.items)
-        else:
-            return {}
-
-
-    def data_validation (self, data)
+  #  def data_validation (self, data):
