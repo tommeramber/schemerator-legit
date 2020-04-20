@@ -46,3 +46,9 @@ To run the dev template from your workstation:
 
 `oc delete all -l template=schemerator-dev-template`
 does not delete secrets!
+
+## Run Localy
+In the dockerfile location : 
+`docker image build .`
+
+`docker run -v {DB_LOCAL_FOLDER}:/home/mitmproxy/db --env APP_URL={DEMO_APP_URL} --env APP_PORT=80 -p 8080:8080 {IMAGE_HASH}`

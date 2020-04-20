@@ -3,3 +3,6 @@
 .idea/
 Schemerator/logs/
 *.db
+.vscode
+logs/
+.env
