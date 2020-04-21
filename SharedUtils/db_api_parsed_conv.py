@@ -13,7 +13,7 @@ class ParsedConversationsAPI:
 
     def __init__(self, name):
         self.table_api = Wrapper(name)
-        self.table_name = 'ParsedConversations'
+        self.table_name = 'PARSED_CONVERSATIONS'
         try:
             with self.table_api.cursor as cur:
                 cur.execute("CREATE TABLE [IF NOT EXISTS] ParsedConversations (id INTEGER PRIMARY KEY AUTOINCREMENT, api TEXT,"

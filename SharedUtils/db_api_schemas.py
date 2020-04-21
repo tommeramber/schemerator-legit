@@ -13,7 +13,7 @@ class SchemasAPI:
 
     def __init__(self, name):
         self.table_api = Wrapper(name)
-        self.table_name = 'SchemasConversations'
+        self.table_name = 'SCHEMAS_CONVERSATIONS'
         try:
             with self.table_api.cursor as cur:
                 cur.execute("CREATE TABLE [IF NOT EXISTS] Schemas (api TEXT NOT NULL, method TEXT NOT NULL, schema TEXT"

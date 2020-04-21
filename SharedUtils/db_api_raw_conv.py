@@ -13,7 +13,7 @@ class RawConversationsAPI:
 
     def __init__(self, name):
         self.table_api = Wrapper(name)
-        self.table_name = 'RawConversations'
+        self.table_name = 'RAW_CONVERSATIONS'
         try:
             with self.table_api.cursor as cur:
                 cur.execute("CREATE TABLE [IF NOT EXISTS] RawConversations (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT,"
