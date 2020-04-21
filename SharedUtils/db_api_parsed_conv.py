@@ -17,11 +17,15 @@ class ParsedConversationsAPI:
                                                      " method TEXT, conversation BLOB")
 
     def save_conversation_by_api(self, api: string, method: string, conversation):
+        pass
 
     def get_list_apis(self):
-        return list_of_apis
+        pass
+        #return list_of_apis
 
     def get_conversations_for_api(self, api: string, mathod: string):
-        return list_of_conversations
+        pass
+        #return list_of_conversations
 
     def delete_conversations_for_api(self, api: string, mathod: string):
+        pass
