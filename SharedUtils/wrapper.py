@@ -61,7 +61,7 @@ class Wrapper:
     def create_table(self, name: string, columns: string):  #TODO: do it nicer, columns not as one long string
         try:
             with closing(self.cursor) as cur:
-                cur.execute("CREATE TABLE [IF NOT EXISTS] " + name + " (" + columns + ")")
+                cur.execute("CREATE TABLE IF NOT EXISTS " + name + " (" + columns + ")")
         except sqlite3.Error as e:
             print("Failed to create Raw Conversations table")  # TODO: change to log
             raise e
