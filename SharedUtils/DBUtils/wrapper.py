@@ -33,7 +33,6 @@ class Wrapper:
         self.name = name
         self.__open_connection()
 
-
     def __open_connection(self):
         # Private method to clean op a db connection
         try:
@@ -49,7 +48,6 @@ class Wrapper:
             self.cursor.close()
             self.connection.close()
 
-
     def __enter__(self):
         # For using in 'with' seatmates
         self.__open_connection()
@@ -62,7 +60,7 @@ class Wrapper:
     def __delete__(self, instance):
         self.__close_connection()
 
-    def create_table(self, name: string, columns: string):  #TODO: do it nicer, columns not as one long string
+    def create_table(self, name: string, columns: string):  # TODO: do it nicer, columns not as one long string
         try:
             with closing(self.cursor) as cur:
                 cur.execute("CREATE TABLE IF NOT EXISTS " + name + " (" + columns + ")")
@@ -70,15 +68,18 @@ class Wrapper:
             print("Failed to create Raw Conversations table")  # TODO: change to log
             raise e
 
+    def insert(self, table: string, values: tuple):
+        # insert values to tables. this func aware to the tables defined in db_apis
+        self.__open_connection()  # todo; check why needed
+        with closing(self.cursor) as cur:
+            if table == 'RawConversations':  # TODO: make it global const
+                # TODO: sanitize against sql injection
+                cur.execute("INSERT INTO " + table + " (url, method, reqheaders, req, resheaders, res) "
+                                                     "VALUES (?, ?, ?, ?, ?, ?)", values)
+            elif table == 'ParsedConversations':
+                cur.execute("INSERT INTO " + table + " (api, method, conversation) VALUES (?, ?, ?, ?, ?, ?)", values)
 
-    def insert(self, table: string, data :string):
-       values = data.split(",")
-       with closing(self.cursor) as cur:
-            if table == 'RawConversations': #TODO: make it global const
-                cur.execute("INSERT INTO ? (url, method, reqheaders, req, resheaders, res) VALUES (?, ?, ?, ?, ?, ?)",
-                            (
-                                table,
-                                data.split(",")
-                            )
+                cur.execute("SELECT * FROM " + table)
+                print(cur.fetchmany())
 
-  #  def data_validation (self, data):
+#  def data_validation (self, data):
