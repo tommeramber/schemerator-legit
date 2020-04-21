@@ -30,7 +30,7 @@ class Wrapper:
         self.connection = None
         self.cursor = None
         self.name = name
-        self.__close_connection()
+        self.__open_connection()
 
     # Private method to clean op a db connection
     def __open_connection(self):
@@ -39,6 +39,7 @@ class Wrapper:
             self.cursor = self.connection.cursor()
         except sqlite3.Error as e:
             print("Error connecting to database!")  # TODO: change to log
+            raise e
 
     def __close_connection(self):
         if self.connection:
@@ -63,6 +64,7 @@ class Wrapper:
                 cur.execute("CREATE TABLE [IF NOT EXISTS] " + name + " (" + columns + ")")
         except sqlite3.Error as e:
             print("Failed to create Raw Conversations table")  # TODO: change to log
+            raise e
 
 
   #  def insert(self, table, data):
