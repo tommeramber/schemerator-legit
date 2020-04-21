@@ -15,6 +15,8 @@ from Utils.loggers.main_logger import main_logger
 
 from .HTTP_HEADER_LIST_FROM_RFC import HTTP_HEADER_LIST_FROM_RFC
 
+from SharedUtils.db_api_parsed_conv import ParsedConversationsAPI
+from SharedUtils.db_api_schemas import SchemasAPI
 
 class HttpSchema:
     _COMMENT_SIGN = "#"
@@ -65,6 +67,11 @@ class HttpSchema:
         with open(os.path.join(folder_path, self.CONFIG_FILE_NAME), "w") as f:
             f.write(self.to_string())
 
+    def write_schema(self, db_path: str):
+        #REALLY?????
+        schema_file = SchemasAPI()
+        schema_file.save_schema('', 'CONFIG', self.to_string())
+
     def append_by_http_headers(self, http_headers: HttpHeaders):
             self.mjr_version.append_val(http_headers.mjr_version.value)
             self.min_version.append_val(http_headers.min_version.value)
@@ -96,6 +103,7 @@ class HttpSchema:
 
     def load_from_pre_config(self, config_path):
         """
+        not used!!!!!!
         config file might look like:
 
         Host regex "[a-zA-Z.0-9:]{0,255}"
@@ -179,8 +187,18 @@ class HttpSchema:
                 self.append_by_http_headers(http_conversation.pkt_req.http_headers)
                 self.append_by_http_headers(http_conversation.pkt_res.http_headers)
 
-    def generate_from_db(self):
-        pass
+    def generate_from_db(self, db_path: str):
+        """ 
+        This method appends http_headers to this object and creates the HTTP Schema by it/
+        First we load all the conversation objects from the DB API.Saving happends in a different function.
+        The function dosnt return anything just updates self.
+        :param db_path: the path for the file of the db where data is stored (sqlite3 db file)
+        :raise: exception if there is an error in the db
+        """
+        DataHandler = ParsedConversationsAPI(db_path)
+        for http_conversation in DataHandler.get_conversations_for_api('*', 'GET'):
+            self.append_by_http_headers(http_conversation.pkt_req.http_headers)
+            self.append_by_http_headers(http_conversation.pkt_res.http_headers)
 
     def expand_integer_sizes(self):
         """

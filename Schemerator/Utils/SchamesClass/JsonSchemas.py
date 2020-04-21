@@ -143,7 +143,7 @@ class JsonSchemas:
                                                               method=method_file_name,
                                                               list_of_conversation=curr_http_conversations)
 
-    def generate_from_db(self):
+    def generate_from_db(self, db_path):
         pass
 
     def __eq__(self, other):

@@ -59,13 +59,13 @@ def main():
         http_config = HttpSchema()
 
         #http_config.update_by_folder_of_conversations('db_handle')
-        http_config.generate_from_db()
+        http_config.generate_from_db('db.db')
 
         #what are you?
         if GlobalConfig.global_config.vars.EXPAND_SIZES_IN_HTTP_CONFIG:
             http_config.expand_integer_sizes()
 
-        http_config.write_config('tempName')
+        http_config.write_config('db.db')
 
         json_schemas = JsonSchemas()
         
