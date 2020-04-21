@@ -23,6 +23,9 @@ class ParsedConversationsAPI:
         pass
         #return list_of_apis
 
+    def get_method_for_api(self, api:string):
+        return
+
     def get_conversations_for_api(self, api: string, mathod: string):
         pass
         #return list_of_conversations

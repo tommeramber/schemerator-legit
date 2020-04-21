@@ -12,7 +12,8 @@ import string
 from contextlib import closing
 
 
-def is_json(myjson):    # used for data validation
+def is_json(myjson):
+    # used for data validation
     try:
         json.loads(myjson)
     except ValueError:
@@ -22,18 +23,19 @@ def is_json(myjson):    # used for data validation
 
 class Wrapper:
 
-    # open a db connection on init.
-    # Each container in Schemrator project has a well defined db table,
-    # but they all use the same db
-    # @param name The name of the database to open.
     def __init__(self, name):
+        # open a db connection on init.
+        # Each container in Schemrator project has a well defined db table,
+        # but they all use the same db
+        # @param name The name of the database to open.
         self.connection = None
         self.cursor = None
         self.name = name
         self.__open_connection()
 
-    # Private method to clean op a db connection
+
     def __open_connection(self):
+        # Private method to clean op a db connection
         try:
             self.connection = sqlite3.connect(self.name)
             self.cursor = self.connection.cursor()
@@ -47,12 +49,14 @@ class Wrapper:
             self.cursor.close()
             self.connection.close()
 
-    # For using in 'with' seatmates
+
     def __enter__(self):
+        # For using in 'with' seatmates
         self.__open_connection()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        # For using in 'with' seatmates
         self.__close_connection()
 
     def __delete__(self, instance):
@@ -67,8 +71,14 @@ class Wrapper:
             raise e
 
 
-  #  def insert(self, table, data):
-  #     with closing(self.cursor) as cur:
-  #          cur.execute("INSERT INTO ? ()", (table,  ))
+    def insert(self, table: string, data :string):
+       values = data.split(",")
+       with closing(self.cursor) as cur:
+            if table == 'RawConversations': #TODO: make it global const
+                cur.execute("INSERT INTO ? (url, method, reqheaders, req, resheaders, res) VALUES (?, ?, ?, ?, ?, ?)",
+                            (
+                                table,
+                                data.split(",")
+                            )
 
   #  def data_validation (self, data):
