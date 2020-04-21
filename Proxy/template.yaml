@@ -1,0 +1,113 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: schemerator-apps
+labels:
+  template: "schemerator-app-template"
+  app: "${APP_URL}"
+objects:
+
+
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: schemerator-app-configmap
+    data:
+      proxy-image: image-registry.openshift-image-registry.svc:5000/schemerator/schemerator-proxy
+      proxy-port: "8080"
+
+
+  - kind: Job
+    apiVersion: batch/v1
+    metadata:
+      name: schemerator-app-job
+    spec:
+      parallelism: 1    
+      completions: 1    
+      activeDeadlineSeconds: 1800 
+      backoffLimit: 6   
+      template:         
+        metadata:
+          name: schemerator-app-job
+          labels:
+            job-name: schemerator-app-job
+        spec:
+          volumes:
+            - name: mitmproxy-dbdir
+              persistentVolumeClaim:
+                claimName: ${SCHEMERATOR_DB_PVC}
+          containers:
+            - name: schemerator-app-proxy
+              command: ["mitmdump", "--mode", "reverse:${APP_PROTOCOL}://${APP_URL}:${APP_PORT}", "--set", "confdir=/home/mitmproxy/mitmconf", "-s", "/home/mitmproxy/saveFlow.py"]
+              volumeMounts:
+                - name: mitmproxy-dbdir
+                  mountPath: /home/mitmproxy/db
+              image: image-registry.openshift-image-registry.svc:5000/schemerator/schemerator-proxy
+          restartPolicy: Never
+
+
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: ${SCHEMERATOR_DB_PVC}
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: ${SCHEMERATOR_DB_SIZE}
+
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: schemerator-app-proxy-service
+      annotation:
+        template.openshift.io/expose-service_ip_port: "{.spec.clusterIP}:{.spec.ports[?(.name==\"proxy\")].port}"
+    spec:
+      ports:
+        - name: "proxy"
+          port: 8080
+      selector:
+        job-name: "schemerator-app-job"
+
+
+  - kind: Route
+    apiVersion: v1
+    metadata:
+      name: schemerator-app-proxy-route
+      annotation:
+        template.openshift.io/expose-uri: "http://{.spec.host}"
+    spec:
+      to:
+        kind: Service
+        name: schemerator-app-proxy-service
+
+        
+parameters:
+  - name: APP_URL
+    description: Can be a service name or a DNS
+    displayName: App url
+    required: true 
+    value: app-service
+  - name: APP_PORT
+    description: The port the application listents to
+    displayName: App port
+    value: "8080"
+    required: true
+  - name: APP_PROTOCOL
+    description: http or https
+    displayName: App protocol
+    value: http
+    required: true
+  - name: SCHEMERATOR_DB_SIZE
+    description: The size of the db volume
+    displayName: DB volume size
+    value: 512Mi
+    required: true
+  - name: SCHEMERATOR_DB_PVC
+    description: The name of the PVC for the DB
+    displayName: DB volume name
+    value: schemerator-app-db-pvc
+    required: true
+message: "Job is starting"

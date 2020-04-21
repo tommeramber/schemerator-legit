@@ -1,0 +1,133 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: schemerator-dev
+labels:
+  template: "schemerator-dev-template"
+objects:
+
+
+  - kind: BuildConfig
+    apiVersion: build.openshift.io/v1
+    metadata:
+      name: schemerator-dev-proxy-buildconfig
+    spec:
+      output:
+        to:
+          kind: ImageStreamTag
+          name: 'schemerator-proxy:latest'
+      strategy:
+        type: Docker
+        dockerstrategy:
+          dockerfilePath: Dockerfile
+      source:
+        type: Git
+        git: 
+          uri: 'git@gitlab.com:schemerator/my-proxy.git'
+        contextDir: /
+        sourceSecret:
+          name: alona.git.key
+      triggers:
+        - type: GitLab
+          gitlab:
+            secretReference:
+              name: my-proxy-git-gitlab-webhook-secret
+        - type: ConfigChange
+    runPolicy: Serial
+
+
+  - kind: ImageStream
+    apiVersion: image.openshift.io/v1
+    metadata:
+      name: schemerator-proxy
+    spec:
+      lookupPolicy:
+        local: false      
+    status:
+      dockerImageRepository: 'image-registry.openshift-image-registry.svc:5000/schemerator/schemerator-proxy'
+
+
+  - kind: BuildConfig
+    apiVersion: build.openshift.io/v1
+    metadata:
+      name: schemerator-dev-generator-buildconfig
+    spec:
+      output:
+        to:
+          kind: ImageStreamTag
+          name: 'schema-generator:latest'
+      resources:
+        requests:
+          memory: 512Mi
+      strategy:
+          type: Source
+          sourceStrategy:
+            from:
+              kind: ImageStreamTag
+              namespace: openshift
+              name: 'python:3.6'
+            env:
+              - name: APP_FILE
+                value: Schemerator/main.py
+      source:
+        type: Git
+        git:
+          uri: 'git@gitlab.com:schemerator/schemerator.git'
+          ref: feature/run-bare-genrator
+        contextDir: /
+        sourceSecret:
+          name: alona.git.key
+      triggers:
+        - type: GitLab
+          gitlab:
+            secretReference:
+              name: schema-generator-gitlab-webhook-secret
+        - type: ConfigChange
+      runPolicy: Serial
+
+  - kind: ImageStream
+    apiVersion: image.openshift.io/v1
+    metadata:
+      name: schema-generator
+    spec:
+      lookupPolicy:
+        local: false      
+    status:
+      dockerImageRepository: 'image-registry.openshift-image-registry.svc:5000/schemerator/schema-generator'
+
+
+  - kind: Secret
+    apiVersion: v1
+    metadata:
+      name: alona.git.key
+    data:
+      ssh-privatekey: >-
+        LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUJsd0FBQUFkemMyZ3RjbgpOaEFBQUFBd0VBQVFBQUFZRUF3Sm9ucFdkZnNvV0p3TVpkZWw2VmVWR0ZmaVd2SStUNFJuUktORWRrYTdIRmcvTHJ0blZ0Cm1xZHpKcVBLQ2QxZGRGYWNJNTI5WForS2tESjFFbUVJbzZ5a20xOHRIOFkvai9aaTZIWHkxYjE3Rnc3L1djRWdCS200NzEKT21XcEVwZzJkK0NXeHdjS3R1eGtsMmNiUS9FRFAzRlFBazhGL0s2UWgzL21Zem81TFU3Uld6VDRTOWtrcHYrWDZRMmZCagpITHJGL0lCWEcvbW1KUEd0elB5Ryt2K0lIenR4L1JhRXlHNWg4bmVLY3ZnZ0ZaUG56cHdKMVB5QkFOSDBzd1E4RE5DeUFpCi82anh0QjNSUWt3dkZKSkRLYnBNL29aK3BSOUM2aEtzTVVHT1RhUkFwNUxwckZpVzdUS2Y4K2lCQzN5K0dkMjZJM1pBYzUKVS9wdEFzVElQOHE5NUdPcjBuL0VYOFlTMVNEcjhtYXRleTlNblU3UUpJQnlZNjhLR3pzMUk0SklVakIzQVBlYlBqMzhHZgpGUHNJK0pFUHdMMDRYTGhQbFBkVXUxSE1VR21EZkFkVTZlYU9VeVZrU0VBdlBMZFVMSEV3MjhCRkFubmxCN3cyTzFONDV0CjM5N09taWU0emJEeElRaEFmWERpYjZBV1loeUhjTi9KNkI2WmJPVlBBQUFGb0xmR3JUeTN4cTA4QUFBQUIzTnphQzF5YzIKRUFBQUdCQU1DYUo2Vm5YN0tGaWNER1hYcGVsWGxSaFg0bHJ5UGsrRVowU2pSSFpHdXh4WVB5NjdaMWJacW5jeWFqeWduZApYWFJXbkNPZHZWMmZpcEF5ZFJKaENLT3NwSnRmTFIvR1A0LzJZdWgxOHRXOWV4Y08vMW5CSUFTcHVPOVRwbHFSS1lObmZnCmxzY0hDcmJzWkpkbkcwUHhBejl4VUFKUEJmeXVrSWQvNW1NNk9TMU8wVnMwK0V2WkpLYi9sK2tObndZeHk2eGZ5QVZ4djUKcGlUeHJjejhodnIvaUI4N2NmMFdoTWh1WWZKM2luTDRJQldUNTg2Y0NkVDhnUURSOUxNRVBBelFzZ0l2K284YlFkMFVKTQpMeFNTUXltNlRQNkdmcVVmUXVvU3JERkJqazJrUUtlUzZheFlsdTB5bi9Qb2dRdDh2aG5kdWlOMlFIT1ZQNmJRTEV5RC9LCnZlUmpxOUoveEYvR0V0VWc2L0ptclhzdlRKMU8wQ1NBY21PdkNoczdOU09DU0ZJd2R3RDNtejQ5L0JueFQ3Q1BpUkQ4QzkKT0Z5NFQ1VDNWTHRSekZCcGczd0hWT25tamxNbFpFaEFMenkzVkN4eE1OdkFSUUo1NVFlOE5qdFRlT2JkL2V6cG9udU0ydwo4U0VJUUgxdzRtK2dGbUljaDNEZnllZ2VtV3psVHdBQUFBTUJBQUVBQUFHQWF1b243KzErZGY4akJOd1lzQUVwUUhzOGUxClkzN3RqLzZUeE1wTkNzc2d1dzlSbzROc1RnM3VUdFN4bkk0Y2o4UThTQVVGVVQ5WkRHdmwwRUYvdTlhLzQrTWZHWGZ2ZngKK054dzgxSG1Semd6eUEwUE9xZTJPbUJzeEkzTzNwK09SOTkvVzRQU3R2aXpPV2MyVk5BVjRjeTI3L1Z3aSs3aEdKTVc2UwpXYXJNYXBaQ0tUc3lTZ2gwREMvK0IrVUR6ZEIrbTJWZ0I0V3BNdTQzczFXNEVpL05vMG1nSEp1UkJ6RFVBWkp4dXN3ejF4CnNnaTB1VUJ0Uk1vV1lub3FOK1cwNlcvQ3loUGlIL1F3aWpjK1QvMDI5YU1HNnNYK1gyMEUxUVhUNWhVSlRHSjVpekFETHMKc3hiU0l6RTdrcWFPdWMrbERMM09ST1d6Zlo1UXNtZU8raVM2TVRMemh2cklGNVM0MmxVeVRuWnE0L1NrVCtMRkZqMk9IZwpTRTNCZG1jVGtoRW0zV09JR3ZadVlJejVKdTQ0eFFRSVNlWUFiK2kwekpvbmozZFFVTHNDMjNONFp1ZkhsMjlOeExneW9SCjNMM3ZIN3FIOFNzMmFTblFEMnFNSkdiVHJuTkh5Rlh0ZHUrSlM0Z2tRbzhoRFBxUlV1RGlIYXFkYXR5TnpIa2hmaEFBQUEKd0NTamFKWWFGUkU0Ny9Ock5waE1EczdlOWNNcnBFUUJYcGxNdW9sczZWSHBPY0Z5bzZJUXJsd2pKSmtPMHNBaVNyeVQ5OQovMXZhcGFTaGlLQXVqTHRadzRkNGZvMEF5L2tud1VjM2ZhcmgvY2RNeVIwK3BJQXlEZ3ZwZUx4RFZNMmFPZHNQS2l4RlVZCkxib040eUUzZ2VYdVZnUTlCS0FabTFhUURiNS80dlFhWGxFK0hYd0laNkRtR3dabkZGdUN0czB3WTZSY1c3SldBSGwrYXoKdWprNGpFZXdTRFVZZllxNWdSN01ncU54Mk9WeHBhYzJuSEhHYXkvcFpXMjU5TnZnQUFBTUVBMzdWRWlSMHRtZW4xcVhFYQptU2VaZU80OCtjOWl3THZWVUJ0N2FQQlpmOUtTSHVkYVpyZGJ3SzhQQ0swRW9ZMllWT0ZQQ2VxeVNwcWk1YXRNdERndllwCmJ6eGVnZDhCZmFYV0NWRlRSUkJBdlZkU2lQVjFjUk5HakpLU2Y5UVRqSUlHK01sVyt0K1F5bTArdG9KM2dYZnJxNHhGZjcKa0syVmhnRm1WeUs0NW1CbS8vYlZ6Y25aaktudnIwWndqbnZlTWVjQkZidG0xbjVUbUp6WXMwb1Nua3JicExoV3N2UERkQQoxTzNXNEI0emplbktHbWsxT2lPNTRFYk5Ya0QrRWpBQUFBd1FEY1oyeUF4RnBDTC9pa3ZBQ3UxL2JjbUdueFFGb255b0YzCng4TXZrQ0w4aEgxNCtpWXhKSVEyVkV4U1V2Rm9DREN0YlBncmVqK2JYV2lMWUwvMU9RK3QyVTNjVDVpTHJRZ0IxMGppS2YKTFBXbUV1am5aeUJYc0h6dm4zemRRTWxpRVAvTnMzWDhkdjU0TG5mNUxTYXdrTm9ORDlUam5TUDBnT3JwWHVXSC9iZENuawp0cWh2WkQzQ00vWTBPTkwxelc1MFEvaDM2WVNJbGZrSis2c1oxU0ZaZ0RuRXJoanBEaFpsSUI4d1pyMlBNMm91eHNSem5iCjFvN1F6emJVd0VDK1VBQUFBb1lXeHZibUZ0YjNaemFHOTJhV05vUUVGc2IyNWhjeTFOWVdOQ2IyOXJMVkJ5Ynk1c2IyTmgKYkFFQ0F3PT0KLS0tLS1FTkQgT1BFTlNTSCBQUklWQVRFIEtFWS0tLS0tCg==
+    type: kubernetes.io/ssh-auth
+
+
+  - kind: Secret
+    apiVersion: v1
+    metadata:
+      name: my-proxy-git-gitlab-webhook-secret
+    data:
+      WebHookSecretKey: ZjU3Yzk4YWQ3OTEyZmEyNg==
+    type: Opaque
+
+
+  - kind: Secret
+    apiVersion: v1
+    metadata:
+      name: schema-generator-gitlab-webhook-secret
+    data:
+      WebHookSecretKey: N2FiODJjNzBiYmI2NTYwOA==
+    type: Opaque
+
+parameters:
+  - name: APP_URL
+    description: Can be a service name or a DNS
+    displayName: App url
+    required: true 
+    value: app-service
+
+message: "Job is starting"
