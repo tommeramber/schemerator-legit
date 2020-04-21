@@ -12,8 +12,8 @@ class SchemasAPI:
 
     def __init__(self, name):
         self.table_api = Wrapper(name)
-        self.table_name = 'SCHEMAS_CONVERSATIONS'
-        self.table_api.create_table(self.table_name, "api TEXT NOT NULL, method TEXT NOT NULL, schema TEXT, "
+        self.TABLE_NAME = 'SchemasConversations'
+        self.table_api.create_table(self.TABLE_NAME, "api TEXT NOT NULL, method TEXT NOT NULL, schema TEXT, "
                                                      "PRIMARY KEY (api, method)")
 
 

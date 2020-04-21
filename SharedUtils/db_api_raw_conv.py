@@ -12,8 +12,8 @@ class RawConversationsAPI:
 
     def __init__(self, name):
         self.table_api = Wrapper(name)
-        self.table_name = 'RAW_CONVERSATIONS'
-        self.table_api.create_table(self.table_name, "id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT,"
+        self.TABLE_NAME = 'RawConversations'
+        self.table_api.create_table(self.TABLE_NAME, "id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT,"
                                     " method TEXT, reqheaders TEXT, req TEXT, resheaders TEXT, res TEXT")
 
     def save_one_conversation(self, url: string, method: string,  reqheaders: string,

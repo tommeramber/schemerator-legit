@@ -12,8 +12,8 @@ class ParsedConversationsAPI:
 
     def __init__(self, name):
         self.table_api = Wrapper(name)
-        self.table_name = 'PARSED_CONVERSATIONS'
-        self.table_api.create_table(self.table_name, "id INTEGER PRIMARY KEY AUTOINCREMENT, api TEXT,"
+        self.TABLE_NAME = 'ParsedConversations'
+        self.table_api.create_table(self.TABLE_NAME, "id INTEGER PRIMARY KEY AUTOINCREMENT, api TEXT,"
                                                      " method TEXT, conversation BLOB")
 
     def save_conversation_by_api(self, api: string, method: string, conversation):
