@@ -71,7 +71,7 @@ def main():
         
         #json_schemas.update_by_conversations_folder(folder_conversation_path=
         #                                            CONVERSATIONS_PICKLES_FOLDER)
-        json_schemas.generate_from_db()
+        json_schemas.generate_from_db('db.db')
 
         json_schemas.write_schemas(folder_path=GlobalConfig.global_config.vars.OUTPUT_FOLDER_PATH)
 

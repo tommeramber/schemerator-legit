@@ -15,8 +15,8 @@ from Utils.loggers.main_logger import main_logger
 
 from .HTTP_HEADER_LIST_FROM_RFC import HTTP_HEADER_LIST_FROM_RFC
 
-from SharedUtils.db_api_parsed_conv import ParsedConversationsAPI
-from SharedUtils.db_api_schemas import SchemasAPI
+from SharedUtils.DBUtils.db_api_parsed_conv import ParsedConversationsAPI
+from SharedUtils.DBUtils.db_api_schemas import SchemasAPI
 
 class HttpSchema:
     _COMMENT_SIGN = "#"
@@ -195,8 +195,8 @@ class HttpSchema:
         :param db_path: the path for the file of the db where data is stored (sqlite3 db file)
         :raise: exception if there is an error in the db
         """
-        DataHandler = ParsedConversationsAPI(db_path)
-        for http_conversation in DataHandler.get_conversations_for_api('*', 'GET'):
+        data_handler = ParsedConversationsAPI(db_path)
+        for http_conversation in data_handler.get_conversations_for_api('*', 'GET'):
             self.append_by_http_headers(http_conversation.pkt_req.http_headers)
             self.append_by_http_headers(http_conversation.pkt_res.http_headers)
 
