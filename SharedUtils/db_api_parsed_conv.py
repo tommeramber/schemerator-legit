@@ -21,7 +21,7 @@ class ParsedConversationsAPI:
     def get_list_apis(self):
         return list_of_apis
 
-    def get_conversations_for_api(self, api: string):
+    def get_conversations_for_api(self, api: string, mathod: string):
         return list_of_conversations
 
-    def delete_conversations_for_api(self, api: string):
+    def delete_conversations_for_api(self, api: string, mathod: string):
