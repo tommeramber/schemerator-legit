@@ -8,6 +8,7 @@ Author: Shaya Weissberg
 
 import sqlite3
 import json
+import string
 from contextlib import closing
 
 
@@ -52,6 +53,17 @@ class Wrapper:
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.__close_connection()
+
+    def __delete__(self, instance):
+        self.__close_connection()
+
+    def create_table(self, name: string, columns: string):  #TODO: do it nicer, columns not as one long string
+        try:
+            with closing(self.cursor) as cur:
+                cur.execute("CREATE TABLE [IF NOT EXISTS] " + name + " (" + columns + ")")
+        except sqlite3.Error as e:
+            print("Failed to create Raw Conversations table")  # TODO: change to log
+
 
   #  def insert(self, table, data):
   #     with closing(self.cursor) as cur:

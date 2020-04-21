@@ -3,7 +3,6 @@ API for parsed Conversations table, using the Wrapper module
 
 Author: Shaya Weissberg
 """
-import sqlite3
 
 from .wrapper import Wrapper
 import string
@@ -14,12 +13,8 @@ class ParsedConversationsAPI:
     def __init__(self, name):
         self.table_api = Wrapper(name)
         self.table_name = 'PARSED_CONVERSATIONS'
-        try:
-            with self.table_api.cursor as cur:
-                cur.execute("CREATE TABLE [IF NOT EXISTS] ParsedConversations (id INTEGER PRIMARY KEY AUTOINCREMENT, api TEXT,"
-                                    " method TEXT, conversation BLOB")
-        except sqlite3.Error as e:
-            print("Failed to create Parsed Conversations table")  # TODO: change to log
+        self.table_api.create_table(self.table_name, "id INTEGER PRIMARY KEY AUTOINCREMENT, api TEXT,"
+                                                     " method TEXT, conversation BLOB")
 
     def save_conversation_by_api(self, api: string, method: string, conversation):
 

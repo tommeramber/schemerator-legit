@@ -3,7 +3,6 @@ API for schemas Conversations table, using the Wrapper module
 
 Author: Shaya Weissberg
 """
-import sqlite3
 
 from .wrapper import Wrapper
 import string
@@ -14,14 +13,11 @@ class SchemasAPI:
     def __init__(self, name):
         self.table_api = Wrapper(name)
         self.table_name = 'SCHEMAS_CONVERSATIONS'
-        try:
-            with self.table_api.cursor as cur:
-                cur.execute("CREATE TABLE [IF NOT EXISTS] Schemas (api TEXT NOT NULL, method TEXT NOT NULL, schema TEXT"
-                            "PRIMARY KEY (api, method)")
-        except sqlite3.Error as e:
-            print("Failed to create Schemas table")  # TODO: change to log
+        self.table_api.create_table(self.table_name, "api TEXT NOT NULL, method TEXT NOT NULL, schema TEXT, "
+                                                     "PRIMARY KEY (api, method)")
 
-    def save_schema(self, api: string, method: string, schema: blob):
+
+    def save_schema(self, api: string, method: string, schema):
 
     def get_schema_for_api(self, api: string, method: string):
         return schema
