@@ -22,7 +22,7 @@ class Saver:
             self.conn = sqlite3.connect("/home/mitmproxy/db/db.db") # change this, the best practice is to use environment variable
             with closing(self.conn.cursor()) as cur:
                 #cur.execute("drop table data;")
-                cur.execute("CREATE TABLE data (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT, method TEXT, reqheaders TEXT, req TEXT, resheaders TEXT, res TEXT)")
+                cur.execute("CREATE TABLE IF NOT EXISTS RawConversations (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT, method TEXT, reqheaders TEXT, req TEXT, resheaders TEXT, res TEXT, http_version_str TEXT, http_status TEXT)")
         except Error as e:
             ctx.log.error("db error {}".format(e))        
 
@@ -36,14 +36,16 @@ class Saver:
             return
 
         with closing(self.conn.cursor()) as cur:
-            cur.execute("INSERT INTO data (url, method, reqheaders, req, resheaders, res) VALUES (?, ?, ?, ?, ?, ?)", 
+            cur.execute("INSERT INTO RawConversations (url, method, reqheaders, req, resheaders, res, http_version_str, http_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
                         (
                             flow.request.url.split("?")[0],
                             flow.request.method,
                             bytes(flow.request.headers),
                             flow.request.text,
                             bytes(flow.response.headers),
-                            flow.response.text
+                            flow.response.text, 
+                            flow.request.http_version, 
+                            flow.response.status_code
                         )
             )
 
