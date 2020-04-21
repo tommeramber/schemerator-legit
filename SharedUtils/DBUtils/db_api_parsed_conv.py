@@ -14,12 +14,13 @@ class ParsedConversationsAPI:
     def __init__(self, name):
         self.table_api = Wrapper(name)
         self.TABLE_NAME = 'ParsedConversations'
+        self.TABLE_COLUMNS = "(api, method, conversation)"
         self.table_api.create_table(self.TABLE_NAME, "id INTEGER PRIMARY KEY AUTOINCREMENT, api TEXT,"
                                                      " method TEXT, conversation BLOB")
 
-    def save_conversation_by_api(self, api: string, method: string, conversation):
-        self.table_api.insert(self.TABLE_NAME, (api, method, pickle.dumps(0, conversation)))
-        pass
+    def save_conversation_by_api(self, api: string, method: string, conversation):  #TODO: method include already in conv
+        self.table_api.insert(self.TABLE_NAME, self.TABLE_COLUMNS, (api, method, pickle.dumps(conversation, 0)))
+
 
     def get_list_apis(self):
         pass

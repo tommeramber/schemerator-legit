@@ -62,24 +62,29 @@ class Wrapper:
 
     def create_table(self, name: string, columns: string):  # TODO: do it nicer, columns not as one long string
         try:
+            self.__open_connection()  # TODO: check if there is more elegant way
             with closing(self.cursor) as cur:
                 cur.execute("CREATE TABLE IF NOT EXISTS " + name + " (" + columns + ")")
+            self.__close_connection()  # TODO: check if there is more elegant way
         except sqlite3.Error as e:
-            print("Failed to create Raw Conversations table")  # TODO: change to log
+            print("Failed to create table")  # TODO: change to log
             raise e
 
-    def insert(self, table: string, values: tuple):
+    def insert(self, table: string, columns: string, values: tuple, ):
         # insert values to tables. this func aware to the tables defined in db_apis
-        self.__open_connection()  # todo; check why needed
-        with closing(self.cursor) as cur:
-            if table == 'RawConversations':  # TODO: make it global const
+        place_holders = ''
+        for i in values:
+            place_holders += "?, "
+        try:
+            # without open/close connection explicitly there is race condition and blockage between db_api classes.
+            # "with closing(self.cursor)" doesn't solve it...
+            self.__open_connection()  # TODO: check if there is more elegant way
+            with closing(self.cursor) as cur:
                 # TODO: sanitize against sql injection
-                cur.execute("INSERT INTO " + table + " (url, method, reqheaders, req, resheaders, res) "
-                                                     "VALUES (?, ?, ?, ?, ?, ?)", values)
-            elif table == 'ParsedConversations':
-                cur.execute("INSERT INTO " + table + " (api, method, conversation) VALUES (?, ?, ?, ?, ?, ?)", values)
-
-                cur.execute("SELECT * FROM " + table)
-                print(cur.fetchmany())
+                cur.execute("INSERT INTO " + table + " " + columns + " VALUES (" + place_holders[:-2] + ")", values)
+            self.__close_connection()  # TODO: check if there is more elegant way
+        except sqlite3.Error as e:
+            print("Failed to Insert")  # TODO: change to log
+            raise e
 
 #  def data_validation (self, data):

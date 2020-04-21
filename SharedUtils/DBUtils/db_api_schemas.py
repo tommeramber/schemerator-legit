@@ -13,11 +13,15 @@ class SchemasAPI:
     def __init__(self, name):
         self.table_api = Wrapper(name)
         self.TABLE_NAME = 'SchemasConversations'
+        self.TABLE_COLUMNS = "(api, method, schema)"
         self.table_api.create_table(self.TABLE_NAME, "api TEXT NOT NULL, method TEXT NOT NULL, schema TEXT, "
                                                      "PRIMARY KEY (api, method)")
 
     def save_schema(self, api: string, method: string, schema):
-        pass
+        if self.get_schema_for_api(api, method):
+            print("Replacing existing schema")  # TODO: change to log
+            self.delete_schema_for_api(api, method)
+        self.table_api.insert(self.TABLE_NAME, self.TABLE_COLUMNS, (api, method, schema))
 
     def get_schema_for_api(self, api: string, method: string):
         pass
