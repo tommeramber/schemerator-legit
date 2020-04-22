@@ -1,7 +1,6 @@
 """
 A simple wrapper for sqlite DB in the context of Schemrator project
-The purpose of this module is to give context aware methods for all the
-containers in Schemrator project, to easily handle db
+The purpose of this module is to hide all sqlite3 handling
 
 Author: Shaya Weissberg
 """
@@ -62,27 +61,30 @@ class Wrapper:
 
     def create_table(self, name: string, columns: string):  # TODO: do it nicer, columns not as one long string
         try:
-            self.__open_connection()  # TODO: check if there is more elegant way
-            with closing(self.cursor) as cur:
+            with closing(self.connection.cursor()) as cur:
                 cur.execute("CREATE TABLE IF NOT EXISTS " + name + " (" + columns + ")")
-            self.__close_connection()  # TODO: check if there is more elegant way
         except sqlite3.Error as e:
             print("Failed to create table")  # TODO: change to log
             raise e
 
+    def drop_table(self, name: string): #TODO: test
+        try:
+            with closing(self.cursor) as cur:
+                cur.execute("DROP TABLE " + name)
+        except sqlite3.Error as e:
+            print("Failed to drop table")  # TODO: change to log
+            raise e
+
+
     def insert(self, table: string, columns: string, values: tuple, ):
-        # insert values to tables. this func aware to the tables defined in db_apis
+        # insert values to tables. this func is not aware to the tables defined in db_apis
         place_holders = ''
         for i in values:
             place_holders += "?, "
         try:
-            # without open/close connection explicitly there is race condition and blockage between db_api classes.
-            # "with closing(self.cursor)" doesn't solve it...
-            self.__open_connection()  # TODO: check if there is more elegant way
-            with closing(self.cursor) as cur:
+            with closing(self.connection.cursor()) as cur:
                 # TODO: sanitize against sql injection
                 cur.execute("INSERT INTO " + table + " " + columns + " VALUES (" + place_holders[:-2] + ")", values)
-            self.__close_connection()  # TODO: check if there is more elegant way
         except sqlite3.Error as e:
             print("Failed to Insert")  # TODO: change to log
             raise e

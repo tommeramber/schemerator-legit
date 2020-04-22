@@ -3,25 +3,25 @@ API for Raw Conversations table, using the Wrapper module
 
 Author: Shaya Weissberg
 """
-
-from .wrapper import Wrapper
+from .db_utils_api import DBUtilsAPI
 import string
 
 
-class RawConversationsAPI:
+class RawConversationsAPI(DBUtilsAPI):
 
-    def __init__(self, name):
-        self.table_api = Wrapper(name)
-        self.TABLE_NAME = 'RawConversations'
-        self.TABLE_COLUMNS = "(url, method, reqheaders, req, resheaders, res)"
-        self.table_api.create_table(self.TABLE_NAME, "id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT,"
-                                                     " method TEXT, reqheaders TEXT, req TEXT,"
-                                                     " resheaders TEXT, res TEXT")
+    def __init__(self, DBname):
+        DBUtilsAPI.__init__(self, DBname, 'RawConversations', "(url, method, reqheaders, req, resheaders, res)",
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT,"
+                            " method TEXT, reqheaders TEXT, req TEXT,"
+                            " resheaders TEXT, res TEXT")
+
+        self.create_table()
+
 
     def save_one_conversation(self, url: string, method: string, reqheaders: string,
                               req: string, resheaders: string, res: string):
         values = (url, method, reqheaders, req, resheaders, res)
-        self.table_api.insert(self.TABLE_NAME, self.TABLE_COLUMNS, values)
+        self.save(values)
 
     def save_all_conversations(self, list_of_conversations):
         pass
