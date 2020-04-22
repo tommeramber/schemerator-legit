@@ -21,14 +21,14 @@ class ParsedConversationsAPI(DBUtilsAPI):
 
 
     def get_list_apis(self):
-        pass
+        return self.get_column("api")
         #return list_of_apis
 
     def get_method_for_api(self, api: string):
-        return
+        return self.get('method', 'api="{}"'.format(api))
 
-    def get_conversations_for_api(self, api: string, mathod: string):
-        pass
+    def get_conversations_for_api(self, api: string, method: string):
+        return self.get("conversation", 'api="{}" AND METHOD ="{}"'.format(api, method))
         #return list_of_conversations
 
     def delete_conversations_for_api(self, api: string, mathod: string):

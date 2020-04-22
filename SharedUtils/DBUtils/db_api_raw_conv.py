@@ -4,7 +4,7 @@ API for Raw Conversations table, using the Wrapper module
 Author: Shaya Weissberg
 """
 from .db_utils_api import DBUtilsAPI
-import string
+from ..raw_conversation import RawConversation
 
 
 class RawConversationsAPI(DBUtilsAPI):
@@ -17,17 +17,14 @@ class RawConversationsAPI(DBUtilsAPI):
 
         self.create_table()
 
-
-    def save_one_conversation(self, url: string, method: string, reqheaders: string,
-                              req: string, resheaders: string, res: string):
-        values = (url, method, reqheaders, req, resheaders, res)
-        self.save(values)
+    def save_one_conversation(self, conversation: RawConversation):
+        self.save(tuple(conversation.__dict__.values()))
 
     def save_all_conversations(self, list_of_conversations):
         pass
 
     def get_all_conversations(self):
-        pass
+        return self.get_all_table()
         # return  list_of_conversations
 
     def delete_one_conversation(self, unique_id: int):

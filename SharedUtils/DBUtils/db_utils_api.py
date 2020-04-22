@@ -29,5 +29,20 @@ class DBUtilsAPI:
     def save(self, values):
         self.wrapper.insert(self.TABLE_NAME, self.TABLE_COLUMNS, values)
 
+    def get_all_table(self):
+        return self.wrapper.select('*', self.TABLE_NAME, "TRUE")
+
+    def get_all_where(self, condition):
+        return self.wrapper.select('*', self.TABLE_NAME, condition)
+
+    def get_column(self, column):
+        return self.wrapper.select(column, self.TABLE_NAME, "TRUE")
+
+    def get(self, result, condition):
+        self.wrapper.select(result, self.TABLE_NAME, condition)
+
+
+
+
 
 

@@ -16,18 +16,16 @@ class SchemasAPI(DBUtilsAPI):
         self.create_table()
 
     def save_schema(self, api: string, method: string, schema):
-        if self.get_schema_for_api(api, method):
-            print("Replacing existing schema")  # TODO: change to log
+        if self.get_schema_for_api(api, method): #TODO: fix the blank [] problem
+            print('Replacing existing schema')  # TODO: change to log
             self.delete_schema_for_api(api, method)
         self.save((api, method, schema))
 
     def get_schema_for_api(self, api: string, method: string):
-        pass
-        #return schema
+        return self.get("schema", 'api="{}" AND method ="{}"'.format(api, method))
 
     def get_all_schemas(self):
-        pass
-        #return list_of_schemas
+        return self.get_column("schema")
 
     def delete_schema_for_api(self, api: string, method: string):
         pass

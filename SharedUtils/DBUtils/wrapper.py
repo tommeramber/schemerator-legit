@@ -67,7 +67,7 @@ class Wrapper:
             print("Failed to create table")  # TODO: change to log
             raise e
 
-    def drop_table(self, name: string): #TODO: test
+    def drop_table(self, name: string):  # TODO: test
         try:
             with closing(self.cursor) as cur:
                 cur.execute("DROP TABLE " + name)
@@ -75,8 +75,7 @@ class Wrapper:
             print("Failed to drop table")  # TODO: change to log
             raise e
 
-
-    def insert(self, table: string, columns: string, values: tuple, ):
+    def insert(self, table: string, columns: string, values: tuple):
         # insert values to tables. this func is not aware to the tables defined in db_apis
         place_holders = ''
         for i in values:
@@ -87,6 +86,19 @@ class Wrapper:
                 cur.execute("INSERT INTO " + table + " " + columns + " VALUES (" + place_holders[:-2] + ")", values)
         except sqlite3.Error as e:
             print("Failed to Insert")  # TODO: change to log
+            raise e
+
+    def select(self, columns: string, table: string, condition: string):
+        # select value from tables.
+        #
+        try:
+            with closing(self.connection.cursor()) as cur:
+                # TODO: sanitize against sql injection
+                cur.execute("SELECT " + columns + " FROM " + table + " WHERE " + condition)
+                print(cur.fetchall())
+                return cur.fetchall()
+        except sqlite3.Error as e:
+            print("Failed to SELECT")  # TODO: change to log
             raise e
 
 #  def data_validation (self, data):
