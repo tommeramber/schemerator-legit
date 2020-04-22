@@ -9,6 +9,8 @@ from contextlib import closing
 
 import json
 
+from mitmproxy.net.http.http1.assemble import assemble_request_head, assemble_response_head
+
 def is_json(myjson):
   try:
     json.loads(myjson)
@@ -21,8 +23,8 @@ class Saver:
         try: 
             self.conn = sqlite3.connect("/home/mitmproxy/db/db.db") # change this, the best practice is to use environment variable
             with closing(self.conn.cursor()) as cur:
-                #cur.execute("drop table data;")
-                cur.execute("CREATE TABLE IF NOT EXISTS RawConversations (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT, method TEXT, reqheaders TEXT, req TEXT, resheaders TEXT, res TEXT, http_version_str TEXT, http_status TEXT)")
+                #cur.execute("drop table RawConversations;")
+                cur.execute("CREATE TABLE IF NOT EXISTS RawConversations (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT, method TEXT, reqheaders TEXT, req TEXT, resheaders TEXT, res TEXT)")
         except Error as e:
             ctx.log.error("db error {}".format(e))        
 
@@ -36,16 +38,15 @@ class Saver:
             return
 
         with closing(self.conn.cursor()) as cur:
-            cur.execute("INSERT INTO RawConversations (url, method, reqheaders, req, resheaders, res, http_version_str, http_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
+            # TODO :Check option that is not http1 only
+            cur.execute("INSERT INTO RawConversations (url, method, reqheaders, req, resheaders, res) VALUES (?, ?, ?, ?, ?, ?)", 
                         (
                             flow.request.url.split("?")[0],
                             flow.request.method,
-                            bytes(flow.request.headers),
+                            assemble_request_head(flow.request).decode('utf-8'),
                             flow.request.text,
-                            bytes(flow.response.headers),
-                            flow.response.text, 
-                            flow.request.http_version, 
-                            flow.response.status_code
+                            assemble_response_head(flow.response).decode('utf-8'),
+                            flow.response.text
                         )
             )
 
