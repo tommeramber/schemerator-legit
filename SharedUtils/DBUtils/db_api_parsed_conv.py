@@ -16,20 +16,22 @@ class ParsedConversationsAPI(DBUtilsAPI):
                             " method TEXT, conversation BLOB")
         self.create_table()
 
-    def save_conversation_by_api(self, api: string, method: string, conversation):  #TODO: method include already in conv
+    def save_conversation_by_api(self, api: string, method: string, conversation):
         self.save((api, method, pickle.dumps(conversation, 0)))
 
 
     def get_list_apis(self):
-        return self.get_column("api")
-        #return list_of_apis
+        # return list of apis, without duplications
+        return list(dict.fromkeys(sum(self.get_column("api"), ())))
 
     def get_method_for_api(self, api: string):
-        return self.get('method', 'api="{}"'.format(api))
+        # return list of methods, for given api
+        return list(sum(self.get('method', 'api="{}"'.format(api)), ()))
 
     def get_conversations_for_api(self, api: string, method: string):
-        return self.get("conversation", 'api="{}" AND METHOD ="{}"'.format(api, method))
+        list_of_pikles = list(sum(self.get("conversation", 'api="{}" AND method ="{}"'.format(api, method)), ()))
+        return list(map(pickle.loads, list_of_pikles))
         #return list_of_conversations
 
-    def delete_conversations_for_api(self, api: string, mathod: string):
+    def delete_conversations_for_api(self, api: string, method: string):
         pass

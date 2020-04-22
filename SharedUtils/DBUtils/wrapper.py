@@ -83,7 +83,7 @@ class Wrapper:
         try:
             with closing(self.connection.cursor()) as cur:
                 # TODO: sanitize against sql injection
-                cur.execute("INSERT INTO " + table + " " + columns + " VALUES (" + place_holders[:-2] + ")", values)
+                cur.execute("INSERT INTO {} {} VALUES ({})".format(table, columns, place_holders[:-2]), values)
         except sqlite3.Error as e:
             print("Failed to Insert")  # TODO: change to log
             raise e
@@ -94,8 +94,7 @@ class Wrapper:
         try:
             with closing(self.connection.cursor()) as cur:
                 # TODO: sanitize against sql injection
-                cur.execute("SELECT " + columns + " FROM " + table + " WHERE " + condition)
-                print(cur.fetchall())
+                cur.execute('SELECT {} FROM {} WHERE {}'.format(columns, table, condition))
                 return cur.fetchall()
         except sqlite3.Error as e:
             print("Failed to SELECT")  # TODO: change to log

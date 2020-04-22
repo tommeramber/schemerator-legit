@@ -30,16 +30,16 @@ class DBUtilsAPI:
         self.wrapper.insert(self.TABLE_NAME, self.TABLE_COLUMNS, values)
 
     def get_all_table(self):
-        return self.wrapper.select('*', self.TABLE_NAME, "TRUE")
+        return self.wrapper.select('*', self.TABLE_NAME, '1 IS NOT NULL') #TODO: do it better
 
     def get_all_where(self, condition):
         return self.wrapper.select('*', self.TABLE_NAME, condition)
 
     def get_column(self, column):
-        return self.wrapper.select(column, self.TABLE_NAME, "TRUE")
+        return self.wrapper.select(column, self.TABLE_NAME, '1 IS NOT NULL') #TODO: do it better
 
     def get(self, result, condition):
-        self.wrapper.select(result, self.TABLE_NAME, condition)
+        return self.wrapper.select(result, self.TABLE_NAME, condition)
 
 
 
