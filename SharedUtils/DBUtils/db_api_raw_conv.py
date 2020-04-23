@@ -27,7 +27,7 @@ class RawConversationsAPI(DBUtilsAPI):
     def save_all_conversations(self, list_of_conversations):
         pass
 
-    def get_all_conversations(self):
+    def get_all_conversations(self) -> list:
         # return list of conversations
         return list(map(db_tuple_to_raw_conversation, self.get_all_table()))
 

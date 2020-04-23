@@ -88,7 +88,7 @@ class Wrapper:
             print("Failed to Insert")  # TODO: change to log
             raise e
 
-    def select(self, columns: string, table: string, condition: string):
+    def select(self, columns: string, table: string, condition: string) -> list:
         # select value from tables.
         #
         try:

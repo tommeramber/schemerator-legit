@@ -19,19 +19,18 @@ class ParsedConversationsAPI(DBUtilsAPI):
     def save_conversation_by_api(self, api: string, method: string, conversation):
         self.save((api, method, pickle.dumps(conversation, 0)))
 
-
-    def get_list_apis(self):
+    def get_list_apis(self) -> list:
         # return list of apis, without duplications
         return list(dict.fromkeys(sum(self.get_column("api"), ())))
 
-    def get_method_for_api(self, api: string):
+    def get_method_for_api(self, api: string) -> list:
         # return list of methods, for given api
         return list(sum(self.get('method', 'api="{}"'.format(api)), ()))
 
-    def get_conversations_for_api(self, api: string, method: string):
+    def get_conversations_for_api(self, api: string, method: string) -> list:
+        # return list of conversations
         list_of_pikles = list(sum(self.get("conversation", 'api="{}" AND method ="{}"'.format(api, method)), ()))
         return list(map(pickle.loads, list_of_pikles))
-        #return list_of_conversations
 
     def delete_conversations_for_api(self, api: string, method: string):
         pass

@@ -5,7 +5,6 @@ Author: Shaya Weissberg
 """
 
 from .wrapper import Wrapper
-import string
 
 
 class DBUtilsAPI:
@@ -29,16 +28,16 @@ class DBUtilsAPI:
     def save(self, values):
         self.wrapper.insert(self.TABLE_NAME, self.TABLE_COLUMNS, values)
 
-    def get_all_table(self):
+    def get_all_table(self) -> list:
         return self.wrapper.select('*', self.TABLE_NAME, '1 IS NOT NULL') #TODO: do it better
 
-    def get_all_where(self, condition):
+    def get_all_where(self, condition) -> list:
         return self.wrapper.select('*', self.TABLE_NAME, condition)
 
-    def get_column(self, column):
+    def get_column(self, column) -> list:
         return self.wrapper.select(column, self.TABLE_NAME, '1 IS NOT NULL') #TODO: do it better
 
-    def get(self, result, condition):
+    def get(self, result, condition) -> list:
         return self.wrapper.select(result, self.TABLE_NAME, condition)
 
 

@@ -4,7 +4,6 @@ API for schemas Conversations table, using the Wrapper module
 Author: Shaya Weissberg
 """
 from .db_utils_api import DBUtilsAPI
-from .wrapper import Wrapper
 import string
 
 
@@ -21,11 +20,11 @@ class SchemasAPI(DBUtilsAPI):
             #self.delete_schema_for_api(api, method)
         self.save((api, method, schema))
 
-    def get_schema_for_api(self, api: string, method: string):
+    def get_schema_for_api(self, api: string, method: string) -> string:
         # return schema as a string, out of list of tuple
         return self.get("schema", 'api="{}" AND method ="{}"'.format(api, method))[0][0] #TODO: looks a bit shitty
 
-    def get_all_schemas(self):
+    def get_all_schemas(self) -> list:
         return list(sum(self.get_column("schema"), ()))
 
     def delete_schema_for_api(self, api: string, method: string):
