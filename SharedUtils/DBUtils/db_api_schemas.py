@@ -22,6 +22,7 @@ class SchemasAPI(DBUtilsAPI):
         self.save((api, method, schema))
 
     def get_schema_for_api(self, api: string, method: string):
+        # return schema as a string, out of list of tuple
         return self.get("schema", 'api="{}" AND method ="{}"'.format(api, method))[0][0] #TODO: looks a bit shitty
 
     def get_all_schemas(self):
