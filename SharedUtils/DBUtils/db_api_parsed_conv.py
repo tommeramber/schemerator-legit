@@ -39,7 +39,7 @@ class ParsedConversationsAPI(DBUtilsAPI):
     def get_all_conversations(self) -> list:
         all_conversations = []
         for api in self.get_list_apis():
-            for method in self.get_list_methods()
+            for method in self.get_list_methods():
                 all_conversations += self.get_conversations_for_api(api, method)
         return all_conversations
 
