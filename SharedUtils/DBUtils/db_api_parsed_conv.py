@@ -37,8 +37,13 @@ class ParsedConversationsAPI(DBUtilsAPI):
         return list(map(pickle.loads, list_of_pikles))
 
     def get_all_conversations(self) -> list:
-        list_of_pikles = sum(self.get_all_table()), ()
-        return list(map(pickle.loads, list_of_pikles))
+        all_conversations = list(sum(self.get_all_table(), ()))
+        num_of_pickels = int(len(all_conversations)/3)
+        index = -1
+        for i in range(num_of_pickels):
+            index += 3 #get the conversation index
+            all_conversations[index] = pickle.loads(all_conversations[index])
+        return all_conversations
 
     def delete_conversations_for_api(self, api: string, method: string):
         pass

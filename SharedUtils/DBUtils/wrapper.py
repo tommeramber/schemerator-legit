@@ -56,8 +56,7 @@ class Wrapper:
         # For using in 'with' seatmates
         self.__close_connection()
 
-    def __delete__(self, instance):
-        self.__close_connection()
+
 
     def create_table(self, name: string, columns: string):  # TODO: do it nicer, columns not as one long string
         try:

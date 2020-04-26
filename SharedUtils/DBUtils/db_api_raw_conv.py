@@ -8,7 +8,7 @@ from SharedUtils.raw_conversation import RawConversation
 
 
 def db_tuple_to_raw_conversation(value):  # TODO: is it good way to do it?
-    url, method, reqheaders, req, resheaders, res = value[1:]  # ignoring the id column
+    url, method, reqheaders, req, resheaders, res = value
     return RawConversation(url, method, reqheaders, req, resheaders, res)
 
 
