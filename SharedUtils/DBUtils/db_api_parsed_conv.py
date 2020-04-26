@@ -23,9 +23,9 @@ class ParsedConversationsAPI(DBUtilsAPI):
         # return list of apis, without duplications
         return list(dict.fromkeys(sum(self.get_column("api"), ())))
 
-    def get_list_methods(self) -> list:
+    def get_list_methods_for_api(self, api) -> list:
         # return list of apis, without duplications
-        return list(dict.fromkeys(sum(self.get_column("method"), ())))
+        return list(dict.fromkeys(sum(self.get_column_where("method", 'api="{}"'.format(api)), ())))
 
     def get_method_for_api(self, api: string) -> list:
         # return list of methods, for given api
@@ -37,11 +37,8 @@ class ParsedConversationsAPI(DBUtilsAPI):
         return list(map(pickle.loads, list_of_pikles))
 
     def get_all_conversations(self) -> list:
-        all_conversations = []
-        for api in self.get_list_apis():
-            for method in self.get_list_methods():
-                all_conversations += self.get_conversations_for_api(api, method)
-        return all_conversations
+        list_of_pikles = sum(self.get_all_table()), ()
+        return list(map(pickle.loads, list_of_pikles))
 
     def delete_conversations_for_api(self, api: string, method: string):
         pass

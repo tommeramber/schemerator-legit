@@ -37,6 +37,9 @@ class DBUtilsAPI:
     def get_column(self, column) -> list:
         return self.wrapper.select(column, self.TABLE_NAME, '1 IS NOT NULL') #TODO: do it better
 
+    def get_column_where(self, column, condition) -> list:
+        return self.wrapper.select(column, self.TABLE_NAME, condition) #TODO: do it better
+
     def get(self, result, condition) -> list:
         return self.wrapper.select(result, self.TABLE_NAME, condition)
 
