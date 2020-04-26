@@ -23,6 +23,10 @@ class ParsedConversationsAPI(DBUtilsAPI):
         # return list of apis, without duplications
         return list(dict.fromkeys(sum(self.get_column("api"), ())))
 
+    def get_list_methods(self) -> list:
+        # return list of apis, without duplications
+        return list(dict.fromkeys(sum(self.get_column("method"), ())))
+
     def get_method_for_api(self, api: string) -> list:
         # return list of methods, for given api
         return list(sum(self.get('method', 'api="{}"'.format(api)), ()))
@@ -35,7 +39,8 @@ class ParsedConversationsAPI(DBUtilsAPI):
     def get_all_conversations(self) -> list:
         all_conversations = []
         for api in self.get_list_apis():
-            all_conversations += self.get_conversations_for_api(api)
+            for method in self.get_list_methods()
+                all_conversations += self.get_conversations_for_api(api, method)
         return all_conversations
 
     def delete_conversations_for_api(self, api: string, method: string):
