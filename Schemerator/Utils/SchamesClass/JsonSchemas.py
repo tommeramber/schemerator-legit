@@ -99,19 +99,19 @@ class JsonSchemas:
     def write_schemas(self, db_path: str):
         self._write_schemas_basic_format(db_path)
 
-        log_format_string = 'Basic'
+        #log_format_string = 'Basic'
 
-        main_logger.info('\nWrite Json schemas tree in path: "{}". in "{}" format.'.format(
-                GlobalConfig.global_config.vars.OUTPUT_FOLDER_PATH, log_format_string))
+        #main_logger.info('\nWrite Json schemas tree in path: "{}". in "{}" format.'.format(
+        #        GlobalConfig.global_config.vars.OUTPUT_FOLDER_PATH, log_format_string))
 
-    def _write_schemas_basic_format(self, folder_path: str):
+    def _write_schemas_basic_format(self, db_path: str):
         """
         This method write the json schemas into dirs.
 
         :param folder_path: the path of folder to write schemas into it.
                             must be real path and not relative path.
         """
-        data_handler = SchemasAPI()
+        data_handler = SchemasAPI(db_path)
 
         for url_regex in self.schemas.keys():
             for method in self.schemas[url_regex].keys():
@@ -125,7 +125,7 @@ class JsonSchemas:
                 if url_regex.startswith("\\"):
                     url_regex = url_regex[1:]
                 
-                data_handler.save_schema(url_regex, method, json_schema)
+                data_handler.save_schema(url_regex, method, json.dumps(json_schema))
 
     def update_by_conversations_folder(self, folder_conversation_path):
         main_logger.info('Started creating json schemas from conversation pickles folder : "{}"'.format(
@@ -145,10 +145,10 @@ class JsonSchemas:
                                                               list_of_conversation=curr_http_conversations)
 
     def generate_from_db(self, db_path: str):
-        data_handler = ParsedConversationsAPI()
+        data_handler = ParsedConversationsAPI(db_path)
         for api in data_handler.get_list_apis():
             # TODO: add iteration of methods
-            self.update_schemas_by_list_http_conversation(api, 'GET', data_handler.get_conversations_for_api(api))
+            self.update_schemas_by_list_http_conversation(api, 'GET', data_handler.get_conversations_for_api(api, 'GET'))
 
 
     def __eq__(self, other):
