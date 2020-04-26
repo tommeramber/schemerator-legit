@@ -1,9 +1,7 @@
 import os
-import pathlib
 import re
 
-from Utils.HttpClass.HttpHeaders import HttpHeaders
-from Utils.HelpLibs import binary_object_helper
+from SharedUtils.HttpClass.HttpHeaders import HttpHeaders
 
 from .HttpConfigHeaderField import HttpConfigHeaderField
 from .MinMax import MinMax
@@ -60,15 +58,13 @@ class HttpSchema:
 
         return config_string
 
-    def write_config(self, folder_path: str):
-        main_logger.info('Wrote HTTP Config file in path: "{}"'.format(folder_path))
-        pathlib.Path(folder_path).mkdir(parents=True, exist_ok=True)
-
-        with open(os.path.join(folder_path, self.CONFIG_FILE_NAME), "w") as f:
-            f.write(self.to_string())
-
     def write_schema(self, db_path: str):
-        #REALLY?????
+        """
+            Saving the http schema to the given path using the Schema API.
+            the HTTP schema is save as the API HTTP_CONFIG and the method CONFIG to seperate it from the JSON schemas.
+
+            :param db_path: Path to the db location
+        """
         schema_file = SchemasAPI(db_path)
         schema_file.save_schema('HTTP_CONFIG', 'CONFIG', self.to_string())
 
@@ -169,23 +165,6 @@ class HttpSchema:
                     curr_header_config = None
 
                 line = f.readline()
-
-    def update_by_folder_of_conversations(self, folder_of_conversations):
-        """
-        This method update HttpConfig object from folder that contain HttpConversation objects in binary.
-        he load HttpConversation one by one (for save resource)
-        and get HttpHeaders object from him to create HttpConfig.
-
-        :param folder_of_conversations:
-        :return: HttpConfig object.
-        """
-        main_logger.info('Started creating http config from conversation pickles folder : "{}"'.format(
-                folder_of_conversations))
-
-        for file_name in binary_object_helper.get_iterator_all_files_name(folder_of_conversations):
-            for http_conversation in binary_object_helper.load_all_binary_objects(file_name):
-                self.append_by_http_headers(http_conversation.pkt_req.http_headers)
-                self.append_by_http_headers(http_conversation.pkt_res.http_headers)
 
     def generate_from_db(self, db_path: str):
         """ 
