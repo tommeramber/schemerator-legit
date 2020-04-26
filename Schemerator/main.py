@@ -59,19 +59,19 @@ def main():
         http_config = HttpSchema()
 
         #http_config.update_by_folder_of_conversations('db_handle')
-        http_config.generate_from_db()
+        http_config.generate_from_db('db.db')
 
         #what are you?
         if GlobalConfig.global_config.vars.EXPAND_SIZES_IN_HTTP_CONFIG:
             http_config.expand_integer_sizes()
 
-        http_config.write_config('tempName')
+        http_config.write_config('db.db')
 
         json_schemas = JsonSchemas()
         
         #json_schemas.update_by_conversations_folder(folder_conversation_path=
         #                                            CONVERSATIONS_PICKLES_FOLDER)
-        json_schemas.generate_from_db()
+        json_schemas.generate_from_db('db.db')
 
         json_schemas.write_schemas(folder_path=GlobalConfig.global_config.vars.OUTPUT_FOLDER_PATH)
 
