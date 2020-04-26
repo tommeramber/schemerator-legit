@@ -69,8 +69,8 @@ class HttpSchema:
 
     def write_schema(self, db_path: str):
         #REALLY?????
-        schema_file = SchemasAPI()
-        schema_file.save_schema('', 'CONFIG', self.to_string())
+        schema_file = SchemasAPI(db_path)
+        schema_file.save_schema('HTTP_CONFIG', 'CONFIG', self.to_string())
 
     def append_by_http_headers(self, http_headers: HttpHeaders):
             self.mjr_version.append_val(http_headers.mjr_version.value)
@@ -196,7 +196,7 @@ class HttpSchema:
         :raise: exception if there is an error in the db
         """
         data_handler = ParsedConversationsAPI(db_path)
-        for http_conversation in data_handler.get_conversations_for_api('*', 'GET'):
+        for http_conversation in data_handler.get_all_conversations():
             self.append_by_http_headers(http_conversation.pkt_req.http_headers)
             self.append_by_http_headers(http_conversation.pkt_res.http_headers)
 

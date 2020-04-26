@@ -65,7 +65,7 @@ def main():
         if GlobalConfig.global_config.vars.EXPAND_SIZES_IN_HTTP_CONFIG:
             http_config.expand_integer_sizes()
 
-        http_config.write_config('db.db')
+        http_config.write_schema('db.db')
 
         json_schemas = JsonSchemas()
         
@@ -73,7 +73,7 @@ def main():
         #                                            CONVERSATIONS_PICKLES_FOLDER)
         json_schemas.generate_from_db('db.db')
 
-        json_schemas.write_schemas(folder_path=GlobalConfig.global_config.vars.OUTPUT_FOLDER_PATH)
+        json_schemas.write_schemas('db.db')
 
         main_logger.info("SUCCESS!")
     except Exception as e:
