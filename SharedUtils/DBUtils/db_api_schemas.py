@@ -3,7 +3,7 @@ API for schemas Conversations table, using the Wrapper module
 
 Author: Shaya Weissberg
 """
-from .db_utils_api import DBUtilsAPI
+from SharedUtils.DBUtils.db_utils_api import DBUtilsAPI
 import string
 
 

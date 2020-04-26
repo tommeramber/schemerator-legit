@@ -4,7 +4,7 @@ parent class for DB api
 Author: Shaya Weissberg
 """
 
-from .wrapper import Wrapper
+from SharedUtils.DBUtils.wrapper import Wrapper
 
 
 class DBUtilsAPI:

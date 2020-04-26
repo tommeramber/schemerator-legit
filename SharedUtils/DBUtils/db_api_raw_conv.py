@@ -4,12 +4,13 @@ API for Raw Conversations table, using the Wrapper module
 Author: Shaya Weissberg
 """
 from .db_utils_api import DBUtilsAPI
-from ..raw_conversation import RawConversation
+from SharedUtils.raw_conversation import RawConversation
 
 
 def db_tuple_to_raw_conversation(value):  # TODO: is it good way to do it?
     url, method, reqheaders, req, resheaders, res = value[1:]  # ignoring the id column
     return RawConversation(url, method, reqheaders, req, resheaders, res)
+
 
 class RawConversationsAPI(DBUtilsAPI):
 
@@ -30,7 +31,6 @@ class RawConversationsAPI(DBUtilsAPI):
     def get_all_conversations(self) -> list:
         # return list of conversations
         return list(map(db_tuple_to_raw_conversation, self.get_all_table()))
-
 
     def delete_one_conversation(self, unique_id: int):
         pass
