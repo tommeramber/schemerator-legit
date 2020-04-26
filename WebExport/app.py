@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    connection = sqlite3.connect("/db/db.db")
+    connection = sqlite3.connect("db.db")
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM Schemas")
     mytable = from_db_cursor(cursor)
