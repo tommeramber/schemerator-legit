@@ -125,7 +125,7 @@ class JsonSchemas:
                 if url_regex.startswith("\\"):
                     url_regex = url_regex[1:]
                 
-                data_handler.save_schema(url_regex, method, json.dumps(json_schema))
+                data_handler.save_schema(url_regex, method, json.dumps(obj=json_schema, indent=4))
 
     def update_by_conversations_folder(self, folder_conversation_path):
         main_logger.info('Started creating json schemas from conversation pickles folder : "{}"'.format(

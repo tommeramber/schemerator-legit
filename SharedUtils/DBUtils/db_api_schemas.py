@@ -10,7 +10,7 @@ import string
 class SchemasAPI(DBUtilsAPI):
 
     def __init__(self, DBname):
-        DBUtilsAPI.__init__(self, DBname, 'Schemasgit ', "(api, method, schema)",
+        DBUtilsAPI.__init__(self, DBname, 'Schemas', "(api, method, schema)",
                             "api TEXT NOT NULL, method TEXT NOT NULL, schema TEXT, PRIMARY KEY (api, method)")
         self.create_table()
 

@@ -28,9 +28,11 @@ class Wrapper:
         # but they all use the same db
         # @param name The name of the database to open.
         self.connection = None
-        self.cursor = None
         self.name = name
         self.__open_connection()
+
+    def __del__(self):
+        self.__close_connection()
 
     def __open_connection(self):
         # Private method to clean op a db connection
@@ -38,14 +40,18 @@ class Wrapper:
             self.connection = sqlite3.connect(self.name)
             self.cursor = self.connection.cursor()
         except sqlite3.Error as e:
-            print("Error connecting to database!")  # TODO: change to log
+            print("Error connecting to database! : {}".format(e))  # TODO: change to log
             raise e
 
     def __close_connection(self):
-        if self.connection:
+        #if self.connection:
+        try:
             self.connection.commit()
-            self.cursor.close()
             self.connection.close()
+        except Exception as e:
+            print("got closing exception {}".format(e))
+            if self.connection != None:
+                raise e
 
     def __enter__(self):
         # For using in 'with' seatmates
