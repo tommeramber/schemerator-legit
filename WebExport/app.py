@@ -11,3 +11,6 @@ def hello_world():
     cursor.execute("SELECT * FROM Schemas")
     mytable = from_db_cursor(cursor)
     return render_template('layout.html', table=mytable.get_html_string())
+
+if __name__ == "__main__":
+  app.run(host='0.0.0.0' ,port=8080)
