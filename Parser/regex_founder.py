@@ -1,4 +1,5 @@
 from typing import Optional
+from optional_url_regex import OPTIONAL_URL_REGEX
 
 def get_regex(string, regex_list) -> Optional[str]:
     """
@@ -48,8 +49,3 @@ def get_regex_of_url(url: str) -> str:
     return url_regex[:-1]
 
 get_regex_of_url.parts_that_found_regex_for_him = dict()
-
-
-OPTIONAL_URL_REGEX = [
-    "[1-9]{10}"
-]
