@@ -1,5 +1,6 @@
 import regex_founder
 import re
+import json
 
 from SharedUtils.HttpClass.HttpConversation import HttpConversation
 from SharedUtils.HttpClass.Packet import Packet
@@ -48,18 +49,32 @@ def parse_header(header: str) -> HttpHeaders:
                        list_http_header_fields=header_fields)
 
 def main():
-    raw_conv_db = RawConversationsAPI('db.db')
-    parsed_conv_db = ParsedConversationsAPI('db.db')
+    raw_conv_db = RawConversationsAPI('/home/db/db.db')
+    parsed_conv_db = ParsedConversationsAPI('/home/db/db.db')
     conversations =  raw_conv_db.get_all_conversations()
 
     for conversation in conversations:
         fixed_api = regex_founder.get_regex_of_url(conversation.url.split('://')[1])
         req = Packet()
         req.http_headers = parse_header(conversation.reqheaders)
-        req.http_body = HttpBody('JSON', conversation.req)
+        try:
+            # for now i do this workaround for empty string but it can also be not json
+            val = json.loads(conversation.req)
+        except Exception as e:
+            print('got json error {} from string {}'.format(e, conversation.req))
+            val = ''
+
+        req.http_body = HttpBody(type_body='json', value=val)
         res = Packet()
         res.http_headers = parse_header(conversation.resheaders)
-        res.http_body = HttpBody('JSON', conversation.res)
+        try:
+            # for now i do this workaround for empty string but it can also be not json
+            val = json.loads(conversation.res)
+        except Exception as e:
+            print('got json error {} from string {}'.format(e, conversation.res))
+            val = ''
+            
+        res.http_body = HttpBody(type_body='json', value=val)
         cur_conversation = HttpConversation(req, res, fixed_api, conversation.method)
         parsed_conv_db.save_conversation_by_api(fixed_api, conversation.method, cur_conversation)
        

@@ -1,8 +1,8 @@
 FROM python:3
 
-COPY . /app
+COPY WebExport/ /WebExport/
 
-WORKDIR /app
+WORKDIR /WebExport
 
 RUN pip install -r requirements.txt
 
