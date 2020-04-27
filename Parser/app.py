@@ -8,6 +8,7 @@ from SharedUtils.HttpClass.HttpHeaders import HttpHeaders
 from SharedUtils.HttpClass.HttpHeaderField import HttpHeaderField
 from SharedUtils.DBUtils.db_api_raw_conv import RawConversationsAPI
 from SharedUtils.DBUtils.db_api_parsed_conv import ParsedConversationsAPI
+from SharedUtils.raw_conversation import RawConversation
 
 REGEX_GET_VERSION = re.compile(".*HTTP/(\d).(\d)")
 REGEX_GET_STATUS = re.compile(".*HTTP/\d.\d (.*)")
@@ -52,15 +53,15 @@ def main():
     conversations =  raw_conv_db.get_all_conversations()
 
     for conversation in conversations:
-        fixed_api = regex_founder.get_regex_of_url(conversation[URL_INDEX].split('://')[1])
+        fixed_api = regex_founder.get_regex_of_url(conversation.url.split('://')[1])
         req = Packet()
-        req.http_headers = parse_header(conversation[REQ_HEADER_INDEX])
-        req.http_body = HttpBody('JSON', conversation[REQ_BODY_INDEX])
+        req.http_headers = parse_header(conversation.reqheaders)
+        req.http_body = HttpBody('JSON', conversation.req)
         res = Packet()
-        res.http_headers = parse_header(conversation[RES_HEADER_INDEX])
-        res.http_body = HttpBody('JSON', conversation[RES_BODY_INDEX])
-        cur_conversation = HttpConversation(req, res, fixed_api, conversation[METHOD_INDEX])
-        parsed_conv_db.save_conversation_by_api(fixed_api, conversation[METHOD_INDEX], cur_conversation)
+        res.http_headers = parse_header(conversation.resheaders)
+        res.http_body = HttpBody('JSON', conversation.res)
+        cur_conversation = HttpConversation(req, res, fixed_api, conversation.method)
+        parsed_conv_db.save_conversation_by_api(fixed_api, conversation.method, cur_conversation)
        
         #parse headersrm
 
