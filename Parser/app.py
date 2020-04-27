@@ -1,6 +1,4 @@
-import sqlite3
 import regex_founder
-import pickle
 import re
 
 from SharedUtils.HttpClass.HttpConversation import HttpConversation
@@ -8,6 +6,8 @@ from SharedUtils.HttpClass.Packet import Packet
 from SharedUtils.HttpClass.HttpBody import HttpBody
 from SharedUtils.HttpClass.HttpHeaders import HttpHeaders
 from SharedUtils.HttpClass.HttpHeaderField import HttpHeaderField
+from SharedUtils.DBUtils.db_api_raw_conv import RawConversationsAPI
+from SharedUtils.DBUtils.db_api_parsed_conv import ParsedConversationsAPI
 
 REGEX_GET_VERSION = re.compile(".*HTTP/(\d).(\d)")
 REGEX_GET_STATUS = re.compile(".*HTTP/\d.\d (.*)")
@@ -47,11 +47,9 @@ def parse_header(header: str) -> HttpHeaders:
                        list_http_header_fields=header_fields)
 
 def main():
-    conn = sqlite3.connect('db.db')
-    cur = conn.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS ParsedConversations (id INTEGER PRIMARY KEY AUTOINCREMENT, api TEXT, method TEXT, conversation BLOB)")
-    cur.execute("select * from RawConversations")
-    conversations =  cur.fetchall()
+    raw_conv_db = RawConversationsAPI('db.db')
+    parsed_conv_db = ParsedConversationsAPI('db.db')
+    conversations =  raw_conv_db.get_all_conversations()
 
     for conversation in conversations:
         fixed_api = regex_founder.get_regex_of_url(conversation[URL_INDEX].split('://')[1])
@@ -62,13 +60,9 @@ def main():
         res.http_headers = parse_header(conversation[RES_HEADER_INDEX])
         res.http_body = HttpBody('JSON', conversation[RES_BODY_INDEX])
         cur_conversation = HttpConversation(req, res, fixed_api, conversation[METHOD_INDEX])
-        cur.execute("INSERT INTO ParsedConversations (api, method, conversation) VALUES (?, ?, ?)", (fixed_api, conversation[METHOD_INDEX], pickle.dumps(cur_conversation, 0)))
-        #parse headers
-
-    cur.close()
-    conn.commit()
-    conn.close()
-
+        parsed_conv_db.save_conversation_by_api(fixed_api, conversation[METHOD_INDEX], cur_conversation)
+       
+        #parse headersrm
 
 if __name__ == "__main__":
     main()
