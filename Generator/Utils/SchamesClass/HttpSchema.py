@@ -1,9 +1,7 @@
 import os
-import pathlib
 import re
 
-from Utils.HttpClass.HttpHeaders import HttpHeaders
-from Utils.HelpLibs import binary_object_helper
+from SharedUtils.HttpClass.HttpHeaders import HttpHeaders
 
 from .HttpConfigHeaderField import HttpConfigHeaderField
 from .MinMax import MinMax
@@ -15,6 +13,8 @@ from Utils.loggers.main_logger import main_logger
 
 from .HTTP_HEADER_LIST_FROM_RFC import HTTP_HEADER_LIST_FROM_RFC
 
+from SharedUtils.DBUtils.db_api_parsed_conv import ParsedConversationsAPI
+from SharedUtils.DBUtils.db_api_schemas import SchemasAPI
 
 class HttpSchema:
     _COMMENT_SIGN = "#"
@@ -58,12 +58,15 @@ class HttpSchema:
 
         return config_string
 
-    def write_config(self, folder_path: str):
-        main_logger.info('Wrote HTTP Config file in path: "{}"'.format(folder_path))
-        pathlib.Path(folder_path).mkdir(parents=True, exist_ok=True)
+    def write_schema(self, db_path: str):
+        """
+            Saving the http schema to the given path using the Schema API.
+            the HTTP schema is save as the API HTTP_CONFIG and the method CONFIG to seperate it from the JSON schemas.
 
-        with open(os.path.join(folder_path, self.CONFIG_FILE_NAME), "w") as f:
-            f.write(self.to_string())
+            :param db_path: Path to the db location
+        """
+        schema_file = SchemasAPI(db_path)
+        schema_file.save_schema('HTTP_CONFIG', 'CONFIG', self.to_string())
 
     def append_by_http_headers(self, http_headers: HttpHeaders):
             self.mjr_version.append_val(http_headers.mjr_version.value)
@@ -96,6 +99,7 @@ class HttpSchema:
 
     def load_from_pre_config(self, config_path):
         """
+        not used!!!!!!
         config file might look like:
 
         Host regex "[a-zA-Z.0-9:]{0,255}"
@@ -162,25 +166,18 @@ class HttpSchema:
 
                 line = f.readline()
 
-    def update_by_folder_of_conversations(self, folder_of_conversations):
+    def generate_from_db(self, db_path: str):
+        """ 
+        This method appends http_headers to this object and creates the HTTP Schema by it/
+        First we load all the conversation objects from the DB API.Saving happends in a different function.
+        The function dosnt return anything just updates self.
+        :param db_path: the path for the file of the db where data is stored (sqlite3 db file)
+        :raise: exception if there is an error in the db
         """
-        This method update HttpConfig object from folder that contain HttpConversation objects in binary.
-        he load HttpConversation one by one (for save resource)
-        and get HttpHeaders object from him to create HttpConfig.
-
-        :param folder_of_conversations:
-        :return: HttpConfig object.
-        """
-        main_logger.info('Started creating http config from conversation pickles folder : "{}"'.format(
-                folder_of_conversations))
-
-        for file_name in binary_object_helper.get_iterator_all_files_name(folder_of_conversations):
-            for http_conversation in binary_object_helper.load_all_binary_objects(file_name):
-                self.append_by_http_headers(http_conversation.pkt_req.http_headers)
-                self.append_by_http_headers(http_conversation.pkt_res.http_headers)
-
-    def generate_from_db(self):
-        pass
+        data_handler = ParsedConversationsAPI(db_path)
+        for http_conversation in data_handler.get_all_conversations():
+            self.append_by_http_headers(http_conversation.pkt_req.http_headers)
+            self.append_by_http_headers(http_conversation.pkt_res.http_headers)
 
     def expand_integer_sizes(self):
         """

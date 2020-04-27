@@ -3,29 +3,34 @@ API for Raw Conversations table, using the Wrapper module
 
 Author: Shaya Weissberg
 """
+from .db_utils_api import DBUtilsAPI
+from SharedUtils.raw_conversation import RawConversation
 
-from .wrapper import Wrapper
-import string
+
+def db_tuple_to_raw_conversation(value):  # TODO: is it good way to do it?
+    url, method, reqheaders, req, resheaders, res = value
+    return RawConversation(url, method, reqheaders, req, resheaders, res)
 
 
-class RawConversationsAPI:
+class RawConversationsAPI(DBUtilsAPI):
 
-    def __init__(self, name):
-        self.table_api = Wrapper(name)
-        self.TABLE_NAME = 'RawConversations'
-        self.table_api.create_table(self.TABLE_NAME, "id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT,"
-                                    " method TEXT, reqheaders TEXT, req TEXT, resheaders TEXT, res TEXT")
+    def __init__(self, DBname):
+        DBUtilsAPI.__init__(self, DBname, 'RawConversations', "(url, method, reqheaders, req, resheaders, res)",
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT,"
+                            " method TEXT, reqheaders TEXT, req TEXT,"
+                            " resheaders TEXT, res TEXT")
 
-    def save_one_conversation(self, url: string, method: string,  reqheaders: string,
-                              req: string, resheaders: string, res: string):
-        pass
+        self.create_table()
+
+    def save_one_conversation(self, conversation: RawConversation):
+        self.save(tuple(conversation.__dict__.values()))
 
     def save_all_conversations(self, list_of_conversations):
         pass
 
-    def get_all_conversations(self):
-        pass
-        #return  list_of_conversations
+    def get_all_conversations(self) -> list:
+        # return list of conversations
+        return list(map(db_tuple_to_raw_conversation, self.get_all_table()))
 
     def delete_one_conversation(self, unique_id: int):
         pass

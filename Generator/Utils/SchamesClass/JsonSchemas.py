@@ -1,14 +1,14 @@
 import json
 import os
-import pathlib
 from collections import defaultdict
 
-from Utils.HelpLibs.binary_object_helper import load_all_binary_objects
 from Utils.HelpLibs.GensonPlusPlus.builder import SchemaBuilder as SchemaBuilderPlusPlus
 from Utils.loggers.main_logger import main_logger
 
 from Utils.ConfigClass import GlobalConfig
 
+from SharedUtils.DBUtils.db_api_parsed_conv import ParsedConversationsAPI
+from SharedUtils.DBUtils.db_api_schemas import SchemasAPI
 
 class JsonSchemas:
     SIGN_OF_SIMPLE_SPLIT_PATH = "/"
@@ -29,16 +29,6 @@ class JsonSchemas:
     def __init__(self, schemas: defaultdict=defaultdict()):
         # Schemas is dict that keys is url+method and value is Genson++ builders.
         self.schemas = schemas
-
-    @staticmethod
-    def _list_dirs_in_dir(dir_path: str):
-        """
-        This is help function
-        he return the list of all directories in directory.
-
-        :return: list of directories path.
-        """
-        return [x for x in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, x))]
 
     def load_from_folder(self, folder_path):
         main_logger.info("Load schemas from folder {}".format(folder_path))
@@ -87,29 +77,14 @@ class JsonSchemas:
         for res in response_json_list:
             self.schemas[url][method]["res"].add_object(res)
 
-    @staticmethod
-    def _write_schema(path, json_schema):
-        pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
-        with open(os.path.join(path, JsonSchemas.SCHEMA_JSON_FILES_NAME), "w") as f:
-            json.dump(obj=json_schema, fp=f, indent=4)
-
-    def write_schemas(self, folder_path: str):
-        self._write_schemas_basic_format(folder_path)
-
-        log_format_string = 'Basic'
-
-        main_logger.info('\nWrite Json schemas tree in path: "{}". in "{}" format.'.format(
-                GlobalConfig.global_config.vars.OUTPUT_FOLDER_PATH, log_format_string))
-
-    def _write_schemas_basic_format(self, folder_path: str):
+    def write_schemas(self, db_path: str):
         """
-        This method write the json schemas into dirs.
+        This method write the json schemas into db.
 
-        :param folder_path: the path of folder to write schemas into it.
-                            must be real path and not relative path.
+        :param db_path: the path of db to write schemas into it.
         """
-        pathlib.Path(folder_path).mkdir(parents=True, exist_ok=True)
+        data_handler = SchemasAPI(db_path)
 
         for url_regex in self.schemas.keys():
             for method in self.schemas[url_regex].keys():
@@ -122,29 +97,20 @@ class JsonSchemas:
 
                 if url_regex.startswith("\\"):
                     url_regex = url_regex[1:]
-                schema_final_path = os.path.join(folder_path, url_regex, method)
+                
+                data_handler.save_schema(url_regex, method, json.dumps(obj=json_schema, indent=4))
 
-                self._write_schema(schema_final_path, json_schema)
+    def generate_from_db(self, db_path: str):
+        """
+        load Parsed conversations from db in db_path and create json schemas acording to them.
 
-    def update_by_conversations_folder(self, folder_conversation_path):
-        main_logger.info('Started creating json schemas from conversation pickles folder : "{}"'.format(
-                folder_conversation_path))
-        # Convert from pathlib.Path object to regular string.
-        folder_conversation_path = str(folder_conversation_path)
+        :param db_path: path for the Parsed conversation db
+        """
+        data_handler = ParsedConversationsAPI(db_path)
+        for api in data_handler.get_list_apis():
+            # TODO: add iteration of methods
+            self.update_schemas_by_list_http_conversation(api, 'GET', data_handler.get_conversations_for_api(api, 'GET'))
 
-        # Run all over files of conversations.
-        # and get the list of HTTPConversations object from each file.
-        # and append schemas by him.
-        for (dir_path, dir_names, file_names) in os.walk(folder_conversation_path):
-            dir_path_without_folder_conversation_path = dir_path[len(folder_conversation_path):]
-            for method_file_name in file_names:
-                curr_http_conversations = load_all_binary_objects(os.path.join(dir_path, method_file_name))
-                self.update_schemas_by_list_http_conversation(url=dir_path_without_folder_conversation_path,
-                                                              method=method_file_name,
-                                                              list_of_conversation=curr_http_conversations)
-
-    def generate_from_db(self):
-        pass
 
     def __eq__(self, other):
         return vars(self) == vars(other)
