@@ -1,6 +1,6 @@
 FROM mitmproxy/mitmproxy:5.0.1
 
-COPY --chown=mitmproxy saveFlow.py "/home/mitmproxy/saveFlow.py"
+COPY --chown=mitmproxy Proxy/saveFlow.py "/home/mitmproxy/saveFlow.py"
 
 RUN    mkdir /home/mitmproxy/db \
     && mkdir /home/mitmproxy/mitmconf \
