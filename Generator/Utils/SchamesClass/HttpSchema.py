@@ -9,7 +9,7 @@ from .StringConfig import StringConfig
 
 from Utils.ConfigClass import GlobalConfig
 
-from SharedUtils.main_logger import main_logger
+import SharedUtils.main_logger as log
 
 from .HTTP_HEADER_LIST_FROM_RFC import HTTP_HEADER_LIST_FROM_RFC
 
@@ -80,7 +80,7 @@ class HttpSchema:
                 header_field.name = header_field.name.lower()
                 if GlobalConfig.global_config.vars.WORK_ONLY_WITH_HEADERS_IN_RFC and\
                                 header_field.name not in HTTP_HEADER_LIST_FROM_RFC:
-                        main_logger.error("Was header {} "
+                        log.main_logger.error("Was header {} "
                                           "and he is not part of headers in RFC."
                                           "and you try work only with headers in RFC".format(header_field))
                 else:
@@ -109,7 +109,7 @@ class HttpSchema:
 
         :param config_path: path to config file.
         """
-        main_logger.info("Start load pre HTTP Config from file : {}".format(config_path))
+        log.main_logger.info("Start load pre HTTP Config from file : {}".format(config_path))
         curr_header_config = None
 
         with open(str(config_path), 'r') as f:
@@ -155,7 +155,7 @@ class HttpSchema:
                         enum_options = re.findall('\"([^\"]*)\"', enum_line)
                         curr_header_config = StringConfig(enum=enum_options)
                     else:
-                        main_logger.error("An error occur while try update by pre config\n"
+                        log.main_logger.error("An error occur while try update by pre config\n"
                                           "This line made the error {}".format(line))
                         line = f.readline()
                         continue
@@ -184,7 +184,7 @@ class HttpSchema:
         This method expand the minimum and maximum of all headers without mjr/min version and status.
         he call to the func expand_integer_sizes() in StringConfig and MinMax object.
         """
-        main_logger.info("Expanding the sizes of min/max in HTTP Config file to be in integer sizes.")
+        log.main_logger.info("Expanding the sizes of min/max in HTTP Config file to be in integer sizes.")
 
         for header_key, header_val in self.dict_http_config_header.items():
             header_val.value.expand_integer_sizes()

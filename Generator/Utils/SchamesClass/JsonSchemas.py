@@ -3,7 +3,7 @@ import os
 from collections import defaultdict
 
 from Utils.HelpLibs.GensonPlusPlus.builder import SchemaBuilder as SchemaBuilderPlusPlus
-from SharedUtils.main_logger import main_logger
+import SharedUtils.main_logger as log
 
 from SharedUtils.DBUtils.db_api_parsed_conv import ParsedConversationsAPI
 from SharedUtils.DBUtils.db_api_schemas import SchemasAPI
@@ -29,7 +29,7 @@ class JsonSchemas:
         self.schemas = schemas
 
     def load_from_folder(self, folder_path):
-        main_logger.info("Load schemas from folder {}".format(folder_path))
+        log.main_logger.info("Load schemas from folder {}".format(folder_path))
 
         if not os.path.isdir(folder_path):
             raise OSError("FOLDER NOT EXIST")
@@ -37,7 +37,7 @@ class JsonSchemas:
         for url_folder in self._list_dirs_in_dir(folder_path):
             for method_folder in self._list_dirs_in_dir(os.path.join(folder_path, url_folder)):
                 with open(os.path.join(folder_path, url_folder, method_folder, self.SCHEMA_JSON_FILES_NAME)) as f:
-                    main_logger.info("Load schema about url : {}, and method : {}".format(url_folder, method_folder))
+                    log.main_logger.info("Load schema about url : {}, and method : {}".format(url_folder, method_folder))
 
                     self.schemas[url_folder] = dict()
                     self.schemas[url_folder][method_folder] = dict()
