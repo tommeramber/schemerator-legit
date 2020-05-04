@@ -3,9 +3,7 @@ import os
 from collections import defaultdict
 
 from Utils.HelpLibs.GensonPlusPlus.builder import SchemaBuilder as SchemaBuilderPlusPlus
-from Utils.loggers.main_logger import main_logger
-
-from Utils.ConfigClass import GlobalConfig
+from SharedUtils.main_logger import main_logger
 
 from SharedUtils.DBUtils.db_api_parsed_conv import ParsedConversationsAPI
 from SharedUtils.DBUtils.db_api_schemas import SchemasAPI

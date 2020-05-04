@@ -2,7 +2,7 @@ from .IConfigParser import IConfigParser
 
 from .GlobalConfigurationVars import GlobalConfigurationVars
 
-from Utils.loggers.main_logger import main_logger
+from SharedUtils.main_logger import main_logger
 
 import yaml
 import re

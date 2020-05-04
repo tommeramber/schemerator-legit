@@ -7,7 +7,7 @@ import os
 import datetime
 from pathlib import Path
 
-from Utils.loggers.main_logger import main_logger
+from SharedUtils.main_logger import main_logger, initialize_logger
 
 from Utils.SchamesClass.HttpSchema import HttpSchema
 from Utils.SchamesClass.JsonSchemas import JsonSchemas
@@ -37,6 +37,7 @@ def main():
     # Initialize the Global config object.
     # TODO: Acctually use it
     GlobalConfig.global_config = GlobalConfig.GlobalConfig('config.yaml')
+    initialize_logger('generator')
     db_path = '/home/db/db.db'
 
     try:

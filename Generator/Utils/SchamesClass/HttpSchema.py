@@ -9,7 +9,7 @@ from .StringConfig import StringConfig
 
 from Utils.ConfigClass import GlobalConfig
 
-from Utils.loggers.main_logger import main_logger
+from SharedUtils.main_logger import main_logger
 
 from .HTTP_HEADER_LIST_FROM_RFC import HTTP_HEADER_LIST_FROM_RFC
 
