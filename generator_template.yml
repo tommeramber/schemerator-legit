@@ -48,7 +48,7 @@ objects:
           containers: 
             - 
               image: "${GENERATOR_IMAGE}"
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: Always
               name: schemerator-generator
               ports: 
                 - 

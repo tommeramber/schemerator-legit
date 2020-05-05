@@ -48,7 +48,7 @@ objects:
           - name: APP_PORT
             value: "${APP_PORT}"
           image: ${PROXY_IMAGE}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: schemerator-proxy
           ports:
           - containerPort: ${{PROXY_PORT}}

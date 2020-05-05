@@ -48,7 +48,7 @@ objects:
           containers: 
             - 
               image: "${PARSER_IMAGE}"
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: Always
               name: schemerator-parser
               ports: 
                 - 
