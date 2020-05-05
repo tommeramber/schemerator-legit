@@ -4,5 +4,4 @@ oc process schemerator-proxy-template \
 -p PROXY_IMAGE=quay.io/tamber/schemerator-proxy:latest \
 -p PVC_NAME=XXXXXXXXXXXXX
 -p APP_URL=XXXXXXXXXXXXX
--p APP_PORT=XXXXXXXXXXX \
-| oc create -f -
+-p APP_PORT=XXXXXXXXXXX 
