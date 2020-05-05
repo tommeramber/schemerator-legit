@@ -28,27 +28,23 @@ sudo docker push quay.io/tamber/schemerator-parser:latest
 git clone git@gitlab.com:schemerator/schemerator.git
 
 cd schemerator/Proxy
-sudo podman build . schemerator-proxy
+sudo podman build . -t quay.io/tamber/schemerator-proxy:latest
 sudo podman images
-sudo podman tag <image id> quay.io/tamber/schemerator-proxy:latest
 sudo podman push quay.io/tamber/schemerator-proxy:latest
 
 cd schemerator/Generator
-sudo podman build . schemerator-generator
+sudo podman build . -t quay.io/tamber/schemerator-generator:latest
 sudo podman images
-sudo podman tag <image id> quay.io/tamber/schemerator-generator:latest
 sudo podman push quay.io/tamber/schemerator-generator:latest
 
 cd schemerator/WebExport
-sudo podman build . schemerator-web
+sudo podman build . -t quay.io/tamber/schemerator-web:latest
 sudo podman images
-sudo podman tag <image id> quay.io/tamber/schemerator-web:latest
 sudo podman push quay.io/tamber/schemerator-web:latest
 
 cd schemerator/Parser
-sudo podman build . schemerator-parser
+sudo podman build . -t quay.io/tamber/schemerator-parser:latest
 sudo podman images
-sudo podman tag <image id> quay.io/tamber/schemerator-parser:latest
 sudo podman push quay.io/tamber/schemerator-parser:latest
 
 
