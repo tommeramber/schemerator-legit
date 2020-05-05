@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: schemerator-template
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: schemerator-proxy
+      expose: "true"
+    name: schemerator-proxy
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: schemerator-proxy
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: schemerator-proxy
+    name: schemerator-proxy
+  spec:
+    replicas: 1
+    selector:
+      deploymentConfig: schemerator-proxy
+    strategy:
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: schemerator-proxy
+          deploymentConfig: schemerator-proxy
+      spec:
+        containers:
+          - env:
+            - name: APP_URL
+              value: ${APP_URL}
+            - name: APP_PORT
+              value: "${APP_PORT}"
+            image: ${PROXY_IMAGE}
+            imagePullPolicy: Always
+            name: schemerator-proxy
+            ports:
+            - containerPort: ${{PROXY_PORT}}
+              protocol: TCP
+          volumeMounts:
+          - mountPath: ${{MOUNT_PATH}}
+            name: ${{VOLUME_MOUNT_NAME}}
+        volumes:
+          - name: ${{VOLUME_MOUNT_NAME}}
+            persistentVolumeClaim:
+              claimName: ${{PVC_NAME}}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: schemerator-proxy
+      expose: "true"
+    name: schemerator-proxy-route
+  spec:
+    port:
+      targetPort: 8080
+    to:
+      kind: Service
+      name: schemerator-proxy
+      weight: 100
+    wildcardPolicy: None
+parameters:
+  - name: PROXY_PORT
+    description: Proxy Service Port
+    value: "8080"
+  - name: APP_PORT
+    description: Backend application service listening port
+    required: true
+  - name: APP_URL
+    description: [service_name].[ocp_namespace].svc.cluster.local
+    required: true
+  - name: PROXY_IMAGE
+    description: quay.io/tamber/schemerator-proxy:latest
+    required: true
+  - name: PVC_NAME
+    description: Name of persistentVolumeClaim
+    required: true
+  - name: VOLUME_MOUNT_NAME
+    description: Name of Volume mount to link PVC to mountPath
+    value: mypvc
+  - name: MOUNT_PATH
+    description: absolute path to mount inside pod
+    value: "/home/mitmproxy"
