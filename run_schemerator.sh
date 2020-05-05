@@ -1,6 +1,6 @@
 ### Schemerator commands
 oc create -f proxy_template.yml
-oc process \
+oc process schemerator-proxy-template \
 -p PROXY_IMAGE=quay.io/tamber/schemerator-proxy:latest \
 -p PVC_NAME=XXXXXXXXXXXXX
 -p APP_URL=XXXXXXXXXXXXX
