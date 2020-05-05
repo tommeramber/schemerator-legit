@@ -1,0 +1,25 @@
+sudo docker login registry.redhat.io
+## USERNAME+PASSWORD
+sudo docker pull registry.redhat.io/rhel8/python-36
+sudo docker images
+
+git clone git@gitlab.com:schemerator/schemerator.git
+cd schemerator
+
+sudo s2i build Proxy registry.redhat.io/rhel8/python-36 schemerator-proxy
+sudo s2i build WebExport registry.redhat.io/rhel8/python-36 schemerator-web
+sudo s2i build Parser registry.redhat.io/rhel8/python-36 schemerator-parser
+sudo s2i build Generator registry.redhat.io/rhel8/python-36 schemerator-generator
+
+sudo docker tag schemerator-generator quay.io/tamber/schemerator-generator:latest
+sudo docker tag schemerator-proxy quay.io/tamber/schemerator-proxy:latest
+sudo docker tag schemerator-web quay.io/tamber/schemerator-web:latest
+sudo docker tag schemerator-parser quay.io/tamber/schemerator-parser:latest
+
+sudo docker images
+
+sudo docker push quay.io/tamber/schemerator-generator:latest
+sudo docker push quay.io/tamber/schemerator-proxy:latest
+sudo docker push quay.io/tamber/schemerator-web:latest
+sudo docker push quay.io/tamber/schemerator-parser:latest
+
