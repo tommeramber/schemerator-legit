@@ -2,16 +2,16 @@
 apiVersion: v1
 kind: Template
 metadata: 
-  name: schemerator-generator-template
+  name: "schemerator-  -template"
 objects: 
   - 
     apiVersion: v1
     kind: Service
     metadata: 
       labels: 
-        app: schemerator-generator
+        app: schemerator-parser
         expose: "true"
-      name: schemerator-generator
+      name: schemerator-parser
     spec: 
       ports: 
         - 
@@ -20,7 +20,7 @@ objects:
           protocol: TCP
           targetPort: 8080
       selector: 
-        app: schemerator-generator
+        app: schemerator-parser
       sessionAffinity: None
       type: ClusterIP
     status: 
@@ -30,29 +30,29 @@ objects:
     kind: DeploymentConfig
     metadata: 
       labels: 
-        app: schemerator-generator
-      name: schemerator-generator
+        app: schemerator-parser
+      name: schemerator-parser
     spec: 
       replicas: 1
       selector: 
-        deploymentConfig: schemerator-generator
+        deploymentConfig: schemerator-parser
       strategy: 
         resources: {}
         type: Recreate
       template: 
         metadata: 
           labels: 
-            app: schemerator-generator
-            deploymentConfig: schemerator-generator
+            app: schemerator-parser
+            deploymentConfig: schemerator-parser
         spec: 
           containers: 
             - 
-              image: "${GENERATOR_IMAGE}"
+              image: "${PARSER_IMAGE}"
               imagePullPolicy: IfNotPresent
-              name: schemerator-generator
+              name: schemerator-parser
               ports: 
                 - 
-                  containerPort: "${{GENERATOR_PORT}}"
+                  containerPort: "${{PARSER_PORT}}"
                   protocol: TCP
           volumeMounts: 
             - 
@@ -68,25 +68,25 @@ objects:
     kind: Route
     metadata: 
       labels: 
-        app: schemerator-generator
+        app: schemerator-parser
         expose: "true"
-      name: schemerator-generator-route
+      name: schemerator-parser-route
     spec: 
       port: 
         targetPort: 8080
       to: 
         kind: Service
-        name: schemerator-generator
+        name: schemerator-parser
         weight: 100
       wildcardPolicy: None
 parameters: 
   - 
-    description: "Generator Service Port"
-    name: GENERATOR_PORT
+    description: "Parser Service Port"
+    name: PARSER_PORT
     value: "8080"
   - 
-    description: "quay.io/tamber/schemerator-generator:latest"
-    name: GENERATOR_IMAGE
+    description: "quay.io/tamber/schemerator-parser:latest"
+    name: PARSER_IMAGE
     required: true
   - 
     description: "Name of persistentVolumeClaim"

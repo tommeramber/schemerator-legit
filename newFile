@@ -23,3 +23,4 @@ sudo docker push quay.io/tamber/schemerator-proxy:latest
 sudo docker push quay.io/tamber/schemerator-web:latest
 sudo docker push quay.io/tamber/schemerator-parser:latest
 
+
