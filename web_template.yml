@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: schemerator-generator-template
+  name: schemerator-web-template
 objects:
 - apiVersion: v1
   kind: Service
   metadata:
     labels:
-      app: schemerator-generator
+      app: schemerator-web
       expose: "true"
-    name: schemerator-generator
+    name: schemerator-web
   spec:
     ports:
     - name: http
@@ -17,7 +17,7 @@ objects:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: schemerator-generator
+      app: schemerator-web
     sessionAffinity: None
     type: ClusterIP
   status:
@@ -26,27 +26,27 @@ objects:
   kind: DeploymentConfig
   metadata:
     labels:
-      app: schemerator-generator
-    name: schemerator-generator
+      app: schemerator-web
+    name: schemerator-web
   spec:
     replicas: 1
     selector:
-      deploymentConfig: schemerator-generator
+      deploymentConfig: schemerator-web
     strategy:
       resources: {}
       type: Recreate
     template:
       metadata:
         labels:
-          app: schemerator-generator
-          deploymentConfig: schemerator-generator
+          app: schemerator-web
+          deploymentConfig: schemerator-web
       spec:
         containers:
-          - image: ${GENERATOR_IMAGE}
+          - image: ${WEB_IMAGE}
             imagePullPolicy: IfNotPresent
-            name: schemerator-generator
+            name: schemerator-web
             ports:
-            - containerPort: ${{GENERATOR_PORT}}
+            - containerPort: ${{WEB_PORT}}
               protocol: TCP
           volumeMounts:
           - mountPath: ${{MOUNT_PATH}}
@@ -59,23 +59,23 @@ objects:
   kind: Route
   metadata:
     labels:
-      app: schemerator-generator
+      app: schemerator-web
       expose: "true"
-    name: schemerator-generator-route
+    name: schemerator-web-route
   spec:
     port:
       targetPort: 8080
     to:
       kind: Service
-      name: schemerator-generator
+      name: schemerator-web
       weight: 100
     wildcardPolicy: None
 parameters:
-  - name: GENERATOR_PORT
-    description: Generator Service Port
+  - name: WEB_PORT
+    description: Web Service Port
     value: "8080"
-  - name: GENERATOR_IMAGE
-    description: quay.io/tamber/schemerator-generator:latest
+  - name: WEB_IMAGE
+    description: quay.io/tamber/schemerator-web:latest
     required: true
   - name: PVC_NAME
     description: Name of persistentVolumeClaim
