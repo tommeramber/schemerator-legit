@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: schemerator-proxy-template
+  name: schemerator-generator-template
 objects:
 - apiVersion: v1
   kind: Service
   metadata:
     labels:
-      app: schemerator-proxy
+      app: schemerator-generator
       expose: "true"
-    name: schemerator-proxy
+    name: schemerator-generator
   spec:
     ports:
     - name: http
@@ -17,7 +17,7 @@ objects:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: schemerator-proxy
+      app: schemerator-generator
     sessionAffinity: None
     type: ClusterIP
   status:
@@ -26,32 +26,27 @@ objects:
   kind: DeploymentConfig
   metadata:
     labels:
-      app: schemerator-proxy
-    name: schemerator-proxy
+      app: schemerator-generator
+    name: schemerator-generator
   spec:
     replicas: 1
     selector:
-      deploymentConfig: schemerator-proxy
+      deploymentConfig: schemerator-generator
     strategy:
       resources: {}
       type: Recreate
     template:
       metadata:
         labels:
-          app: schemerator-proxy
-          deploymentConfig: schemerator-proxy
+          app: schemerator-generator
+          deploymentConfig: schemerator-generator
       spec:
         containers:
-          - env:
-            - name: APP_URL
-              value: ${APP_URL}
-            - name: APP_PORT
-              value: "${APP_PORT}"
-            image: ${PROXY_IMAGE}
+          - image: ${GENERATOR_IMAGE}
             imagePullPolicy: IfNotPresent
-            name: schemerator-proxy
+            name: schemerator-generator
             ports:
-            - containerPort: ${{PROXY_PORT}}
+            - containerPort: ${{GENERATOR_PORT}}
               protocol: TCP
           volumeMounts:
           - mountPath: ${{MOUNT_PATH}}
@@ -64,29 +59,23 @@ objects:
   kind: Route
   metadata:
     labels:
-      app: schemerator-proxy
+      app: schemerator-generator
       expose: "true"
-    name: schemerator-proxy-route
+    name: schemerator-generator-route
   spec:
     port:
       targetPort: 8080
     to:
       kind: Service
-      name: schemerator-proxy
+      name: schemerator-generator
       weight: 100
     wildcardPolicy: None
 parameters:
-  - name: PROXY_PORT
+  - name: GENERATOR_PORT
     description: Proxy Service Port
     value: "8080"
-  - name: APP_PORT
-    description: Backend application service listening port
-    required: true
-  - name: APP_URL
-    description: [service_name].[ocp_namespace].svc.cluster.local
-    required: true
-  - name: PROXY_IMAGE
-    description: quay.io/tamber/schemerator-proxy:latest
+  - name: GENERATOR_IMAGE
+    description: quay.io/tamber/schemerator-generator:latest
     required: true
   - name: PVC_NAME
     description: Name of persistentVolumeClaim
@@ -96,4 +85,4 @@ parameters:
     value: mypvc
   - name: MOUNT_PATH
     description: absolute path to mount inside pod
-    value: "/home/mitmproxy"
+    value: "/home/db"
