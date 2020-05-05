@@ -7,7 +7,7 @@ import os
 import datetime
 from pathlib import Path
 
-from Utils.loggers.main_logger import main_logger
+import SharedUtils.main_logger as log
 
 from Utils.SchamesClass.HttpSchema import HttpSchema
 from Utils.SchamesClass.JsonSchemas import JsonSchemas
@@ -16,7 +16,7 @@ from Utils.ConfigClass import GlobalConfig
 
 
 def log_running_time(start_running):
-    main_logger.info("Program run {} until now.".format(datetime.datetime.now() - start_running))
+    log.main_logger.info("Program run {} until now.".format(datetime.datetime.now() - start_running))
 
 
 def print_logo():
@@ -34,6 +34,7 @@ def print_logo():
 def main():
     print_logo()
 
+    log.initialize_logger('generator')
     # Initialize the Global config object.
     # TODO: Acctually use it
     GlobalConfig.global_config = GlobalConfig.GlobalConfig('config.yaml')
@@ -56,10 +57,9 @@ def main():
 
         json_schemas.write_schemas(db_path)
 
-        main_logger.info("SUCCESS!")
+        log.main_logger.info("SUCCESS!")
     except Exception as e:
-        main_logger.exception(e)
-        raise e
+        log.main_logger.exception(e)
 
 if __name__ == "__main__":
     start_time = datetime.datetime.now()

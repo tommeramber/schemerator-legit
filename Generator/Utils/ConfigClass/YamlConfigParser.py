@@ -2,7 +2,7 @@ from .IConfigParser import IConfigParser
 
 from .GlobalConfigurationVars import GlobalConfigurationVars
 
-from Utils.loggers.main_logger import main_logger
+import SharedUtils.main_logger as log
 
 import yaml
 import re
@@ -42,6 +42,6 @@ class YamlConfigParser(IConfigParser):
                     [re.compile(s) for s in config_data["optional_json_schema_regexs"]] if config_data["optional_json_schema_regexs"] else None
 
             except yaml.YAMLError as exc:
-                main_logger.exception(exc)
+                log.main_logger.exception(exc)
 
         return global_configuration_vars
