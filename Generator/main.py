@@ -34,7 +34,7 @@ def print_logo():
 def main():
     print_logo()
 
-    log.initialize_logger('/home/log/generator.log')
+    log.initialize_logger('generator')
     # Initialize the Global config object.
     # TODO: Acctually use it
     GlobalConfig.global_config = GlobalConfig.GlobalConfig('config.yaml')

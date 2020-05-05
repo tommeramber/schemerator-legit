@@ -4,19 +4,19 @@ import sys
 main_logger = None
 
 
-def initialize_logger(log_path):
+def initialize_logger(log_name):
     # Log config.
     global main_logger
     if not main_logger:
-        main_logger = logging.getLogger(log_path.split('/').pop())
+        main_logger = logging.getLogger(log_name)
         main_logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s (%(pathname)s:%(lineno)d) - %(levelname)s: %(message)s")
     
         # add file handler
-        log_file_handler = logging.FileHandler(log_path, mode="a")
-        log_file_handler.setFormatter(formatter)
-        log_file_handler.setLevel(logging.INFO)
-        main_logger.addHandler(log_file_handler)
+        #log_file_handler = logging.FileHandler(log_path, mode="a")
+        #log_file_handler.setFormatter(formatter)
+        #log_file_handler.setLevel(logging.INFO)
+        #main_logger.addHandler(log_file_handler)
     
         # add stdout handler
         stdout_handler = logging.StreamHandler(sys.stdout)
