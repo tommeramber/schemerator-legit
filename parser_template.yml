@@ -85,9 +85,8 @@ parameters:
     name: PARSER_PORT
     value: "8080"
   - 
-    description: "quay.io/tamber/schemerator-parser:latest"
+    value: "quay.io/tamber/schemerator-parser:latest"
     name: PARSER_IMAGE
-    required: true
   - 
     description: "Name of persistentVolumeClaim"
     name: PVC_NAME

@@ -85,9 +85,8 @@ parameters:
     name: GENERATOR_PORT
     value: "8080"
   - 
-    description: "quay.io/tamber/schemerator-generator:latest"
+    value: "quay.io/tamber/schemerator-generator:latest"
     name: GENERATOR_IMAGE
-    required: true
   - 
     description: "Name of persistentVolumeClaim"
     name: PVC_NAME

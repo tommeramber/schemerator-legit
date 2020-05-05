@@ -86,8 +86,7 @@ parameters:
     description: service_name.ocp_namespace.svc.cluster.local
     required: true
   - name: PROXY_IMAGE
-    description: quay.io/tamber/schemerator-proxy:latest
-    required: true
+    value: quay.io/tamber/schemerator-proxy:latest
   - name: PVC_NAME
     description: Name of persistentVolumeClaim
     required: true
