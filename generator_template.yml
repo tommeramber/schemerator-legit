@@ -1,88 +1,102 @@
+--- 
 apiVersion: v1
 kind: Template
-metadata:
+metadata: 
   name: schemerator-generator-template
-objects:
-- apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
-      app: schemerator-generator
-      expose: "true"
-    name: schemerator-generator
-  spec:
-    ports:
-    - name: http
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-    selector:
-      app: schemerator-generator
-    sessionAffinity: None
-    type: ClusterIP
-  status:
-    loadBalancer: {}
-- apiVersion: apps.openshift.io/v1
-  kind: DeploymentConfig
-  metadata:
-    labels:
-      app: schemerator-generator
-    name: schemerator-generator
-  spec:
-    replicas: 1
-    selector:
-      deploymentConfig: schemerator-generator
-    strategy:
-      resources: {}
-      type: Recreate
-    template:
-      metadata:
-        labels:
-          app: schemerator-generator
-          deploymentConfig: schemerator-generator
-      spec:
-        containers:
-          - image: ${GENERATOR_IMAGE}
-            imagePullPolicy: IfNotPresent
-            name: schemerator-generator
-            ports:
-            - containerPort: ${{GENERATOR_PORT}}
-              protocol: TCP
-          volumeMounts:
-          - mountPath: ${{MOUNT_PATH}}
-            name: ${{VOLUME_MOUNT_NAME}}
-        volumes:
-          - name: ${{VOLUME_MOUNT_NAME}}
-            persistentVolumeClaim:
-              claimName: ${{PVC_NAME}}
-- apiVersion: route.openshift.io/v1
-  kind: Route
-  metadata:
-    labels:
-      app: schemerator-generator
-      expose: "true"
-    name: schemerator-generator-route
-  spec:
-    port:
-      targetPort: 8080
-    to:
-      kind: Service
+objects: 
+  - 
+    apiVersion: v1
+    kind: Service
+    metadata: 
+      labels: 
+        app: schemerator-generator
+        expose: "true"
       name: schemerator-generator
-      weight: 100
-    wildcardPolicy: None
-parameters:
-  - name: GENERATOR_PORT
-    description: Generator Service Port
+    spec: 
+      ports: 
+        - 
+          name: http
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+      selector: 
+        app: schemerator-generator
+      sessionAffinity: None
+      type: ClusterIP
+    status: 
+      loadBalancer: {}
+  - 
+    apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata: 
+      labels: 
+        app: schemerator-generator
+      name: schemerator-generator
+    spec: 
+      replicas: 1
+      selector: 
+        deploymentConfig: schemerator-generator
+      strategy: 
+        resources: {}
+        type: Recreate
+      template: 
+        metadata: 
+          labels: 
+            app: schemerator-generator
+            deploymentConfig: schemerator-generator
+        spec: 
+          containers: 
+            - 
+              image: "${GENERATOR_IMAGE}"
+              imagePullPolicy: IfNotPresent
+              name: schemerator-generator
+              ports: 
+                - 
+                  containerPort: "${{GENERATOR_PORT}}"
+                  protocol: TCP
+          volumeMounts: 
+            - 
+              mountPath: "${{MOUNT_PATH}}"
+              name: "${{VOLUME_MOUNT_NAME}}"
+          volumes: 
+            - 
+              name: "${{VOLUME_MOUNT_NAME}}"
+              persistentVolumeClaim: 
+                claimName: "${{PVC_NAME}}"
+  - 
+    apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata: 
+      labels: 
+        app: schemerator-generator
+        expose: "true"
+      name: schemerator-generator-route
+    spec: 
+      port: 
+        targetPort: 8080
+      to: 
+        kind: Service
+        name: schemerator-generator
+        weight: 100
+      wildcardPolicy: None
+parameters: 
+  - 
+    description: "Generator Service Port"
+    name: GENERATOR_PORT
     value: "8080"
-  - name: GENERATOR_IMAGE
-    description: quay.io/tamber/schemerator-generator:latest
+  - 
+    description: "quay.io/tamber/schemerator-generator:latest"
+    name: GENERATOR_IMAGE
     required: true
-  - name: PVC_NAME
-    description: Name of persistentVolumeClaim
+  - 
+    description: "Name of persistentVolumeClaim"
+    name: PVC_NAME
     required: true
-  - name: VOLUME_MOUNT_NAME
-    description: Name of Volume mount to link PVC to mountPath
+  - 
+    description: "Name of Volume mount to link PVC to mountPath"
+    name: VOLUME_MOUNT_NAME
     value: mypvc
-  - name: MOUNT_PATH
-    description: absolute path to mount inside pod
-    value: "/home/db"
+  - 
+    description: "absolute path to mount inside pod"
+    name: MOUNT_PATH
+    value: /home/db

@@ -1,88 +1,102 @@
+--- 
 apiVersion: v1
 kind: Template
-metadata:
-  name: schemerator-  -template
-objects:
-- apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
-      app: schemerator-parser
-      expose: "true"
-    name: schemerator-parser
-  spec:
-    ports:
-    - name: http
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-    selector:
-      app: schemerator-parser
-    sessionAffinity: None
-    type: ClusterIP
-  status:
-    loadBalancer: {}
-- apiVersion: apps.openshift.io/v1
-  kind: DeploymentConfig
-  metadata:
-    labels:
-      app: schemerator-parser
-    name: schemerator-parser
-  spec:
-    replicas: 1
-    selector:
-      deploymentConfig: schemerator-parser
-    strategy:
-      resources: {}
-      type: Recreate
-    template:
-      metadata:
-        labels:
-          app: schemerator-parser
-          deploymentConfig: schemerator-parser
-      spec:
-        containers:
-          - image: ${PARSER_IMAGE}
-            imagePullPolicy: IfNotPresent
-            name: schemerator-parser
-            ports:
-            - containerPort: ${{PARSER_PORT}}
-              protocol: TCP
-          volumeMounts:
-          - mountPath: ${{MOUNT_PATH}}
-            name: ${{VOLUME_MOUNT_NAME}}
-        volumes:
-          - name: ${{VOLUME_MOUNT_NAME}}
-            persistentVolumeClaim:
-              claimName: ${{PVC_NAME}}
-- apiVersion: route.openshift.io/v1
-  kind: Route
-  metadata:
-    labels:
-      app: schemerator-parser
-      expose: "true"
-    name: schemerator-parser-route
-  spec:
-    port:
-      targetPort: 8080
-    to:
-      kind: Service
+metadata: 
+  name: "schemerator-  -template"
+objects: 
+  - 
+    apiVersion: v1
+    kind: Service
+    metadata: 
+      labels: 
+        app: schemerator-parser
+        expose: "true"
       name: schemerator-parser
-      weight: 100
-    wildcardPolicy: None
-parameters:
-  - name: PARSER_PORT
-    description: Parser Service Port
+    spec: 
+      ports: 
+        - 
+          name: http
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+      selector: 
+        app: schemerator-parser
+      sessionAffinity: None
+      type: ClusterIP
+    status: 
+      loadBalancer: {}
+  - 
+    apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata: 
+      labels: 
+        app: schemerator-parser
+      name: schemerator-parser
+    spec: 
+      replicas: 1
+      selector: 
+        deploymentConfig: schemerator-parser
+      strategy: 
+        resources: {}
+        type: Recreate
+      template: 
+        metadata: 
+          labels: 
+            app: schemerator-parser
+            deploymentConfig: schemerator-parser
+        spec: 
+          containers: 
+            - 
+              image: "${PARSER_IMAGE}"
+              imagePullPolicy: IfNotPresent
+              name: schemerator-parser
+              ports: 
+                - 
+                  containerPort: "${{PARSER_PORT}}"
+                  protocol: TCP
+          volumeMounts: 
+            - 
+              mountPath: "${{MOUNT_PATH}}"
+              name: "${{VOLUME_MOUNT_NAME}}"
+          volumes: 
+            - 
+              name: "${{VOLUME_MOUNT_NAME}}"
+              persistentVolumeClaim: 
+                claimName: "${{PVC_NAME}}"
+  - 
+    apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata: 
+      labels: 
+        app: schemerator-parser
+        expose: "true"
+      name: schemerator-parser-route
+    spec: 
+      port: 
+        targetPort: 8080
+      to: 
+        kind: Service
+        name: schemerator-parser
+        weight: 100
+      wildcardPolicy: None
+parameters: 
+  - 
+    description: "Parser Service Port"
+    name: PARSER_PORT
     value: "8080"
-  - name: PARSER_IMAGE
-    description: quay.io/tamber/schemerator-parser:latest
+  - 
+    description: "quay.io/tamber/schemerator-parser:latest"
+    name: PARSER_IMAGE
     required: true
-  - name: PVC_NAME
-    description: Name of persistentVolumeClaim
+  - 
+    description: "Name of persistentVolumeClaim"
+    name: PVC_NAME
     required: true
-  - name: VOLUME_MOUNT_NAME
-    description: Name of Volume mount to link PVC to mountPath
+  - 
+    description: "Name of Volume mount to link PVC to mountPath"
+    name: VOLUME_MOUNT_NAME
     value: mypvc
-  - name: MOUNT_PATH
-    description: absolute path to mount inside pod
-    value: "/home/db"
+  - 
+    description: "absolute path to mount inside pod"
+    name: MOUNT_PATH
+    value: /home/db

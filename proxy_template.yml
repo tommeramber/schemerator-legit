@@ -42,20 +42,20 @@ objects:
           deploymentConfig: schemerator-proxy
       spec:
         containers:
-          - env:
-            - name: APP_URL
-              value: ${APP_URL}
-            - name: APP_PORT
-              value: "${APP_PORT}"
-            image: ${PROXY_IMAGE}
-            imagePullPolicy: IfNotPresent
-            name: schemerator-proxy
-            ports:
-            - containerPort: ${{PROXY_PORT}}
-              protocol: TCP
-          volumeMounts:
-          - mountPath: ${{MOUNT_PATH}}
-            name: ${{VOLUME_MOUNT_NAME}}
+        - env:
+          - name: APP_URL
+            value: ${APP_URL}
+          - name: APP_PORT
+            value: "${APP_PORT}"
+          image: ${PROXY_IMAGE}
+          imagePullPolicy: IfNotPresent
+          name: schemerator-proxy
+          ports:
+          - containerPort: ${{PROXY_PORT}}
+            protocol: TCP
+        volumeMounts:
+        - mountPath: ${{MOUNT_PATH}}
+          name: ${{VOLUME_MOUNT_NAME}}
         volumes:
           - name: ${{VOLUME_MOUNT_NAME}}
             persistentVolumeClaim:
@@ -83,7 +83,7 @@ parameters:
     description: Backend application service listening port
     required: true
   - name: APP_URL
-    description: [service_name].[ocp_namespace].svc.cluster.local
+    description: service_name.ocp_namespace.svc.cluster.local
     required: true
   - name: PROXY_IMAGE
     description: quay.io/tamber/schemerator-proxy:latest
@@ -96,4 +96,4 @@ parameters:
     value: mypvc
   - name: MOUNT_PATH
     description: absolute path to mount inside pod
-    value: "/home/mitmproxy"
+    value: "/home/mitmproxy/db"
