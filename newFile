@@ -49,5 +49,11 @@ sudo podman push quay.io/tamber/schemerator-parser:latest
 
 
 oc create -f <proxy-template>
+
 oc process -p APP_URL=demo.test.svc.cluster.local -p APP_PORT=8080 -p PVC_NAME=schemerator-shared-storage-claim schemerator-proxy-template | oc create -f -
 curl http://schemerator-proxy-route-schemerator.ocp-mazov-4ed9f8d31ca1b8bf80e8dd69dcaf9978-0000.eu-de.containers.appdomain.cloud/api/v1/person
+
+oc process --parameters template/<template_name>
+
+oc get pvc
+oc process -p PVC_NAME=schemerator-shared-storage-claim schemerator-generator-template | oc create -f -

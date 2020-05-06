@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Template
 metadata: 
-  name: "schemerator-  -template"
+  name: "schemerator-parser-template"
 objects: 
   - 
     apiVersion: v1
