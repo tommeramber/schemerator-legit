@@ -54,6 +54,13 @@ oc process -p APP_URL=demo.test.svc.cluster.local -p APP_PORT=8080 -p PVC_NAME=s
 curl http://schemerator-proxy-route-schemerator.ocp-mazov-4ed9f8d31ca1b8bf80e8dd69dcaf9978-0000.eu-de.containers.appdomain.cloud/api/v1/person
 
 oc process --parameters template/<template_name>
-
 oc get pvc
+
+oc create -f <parser-template>
+oc process -p PVC_NAME=schemerator-shared-storage-claim schemerator-parser-template | oc create -f -
+
+oc create -f <parser-template>
 oc process -p PVC_NAME=schemerator-shared-storage-claim schemerator-generator-template | oc create -f -
+
+oc create -f <web-template>
+oc process -p PVC_NAME=schemerator-shared-storage-claim schemerator-web-template | oc create -f -
